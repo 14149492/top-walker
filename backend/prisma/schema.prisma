@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Clasificación de modelos para RF-04. No representa inventario.
+model Category {
+  id       String    @id
+  name     String    @unique
+  products Product[]
+}
+
+/// Modelo comercial (RF-01/02/07/08/09). Conserva su ID al retirarse o republicarse.
+model Product {
+  id          String    @id @default(uuid())
+  slug        String    @unique
+  name        String
+  description String
+  material    String
+  /// Precio único en Bs para todas las variantes. CHECK price > 0 en la migración SQL.
+  price       Decimal   @db.Decimal(10, 2)
+  /// Control manual: false = no publicado/retirado; true = publicado.
+  /// Retirar usa UPDATE, nunca DELETE; no depende de la disponibilidad.
+  published   Boolean   @default(false)
+  /// Identifica datos ilustrativos, sin añadir un estado comercial.
+  demo        Boolean   @default(false)
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  variants    Variant[]
+  photos      Photo[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([published, categoryId])
+}
+
+/// Combinación de talla y color de un modelo (RF-10), sin cantidad ni precio propio.
+model Variant {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size      Int
+  color     String
+  /// true = disponible; false = agotado. La combinación ausente no se ofrece.
+  available Boolean @default(false)
+
+  /// Impide duplicar una misma combinación dentro del modelo.
+  @@unique([productId, size, color])
+  @@index([size, available])
+}
+
+/// Galería del modelo, compartida por sus variantes (RF-01/02/07/08).
+model Photo {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String
+  /// Orden ascendente desde 0; la posición 0 es la imagen principal.
+  /// CHECK position >= 0 en SQL. El backend mantendrá la secuencia al reordenar.
+  position  Int
+
+  /// Una sola fotografía en cada posición de la galería.
+  @@unique([productId, position])
+}

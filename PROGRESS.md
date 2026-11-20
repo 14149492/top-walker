@@ -1,5 +1,16 @@
 # Top Walker — progreso
 
+## Estado actual · 2026-11-20
+
+- **Sprint 1 completado: HU-06 y HU-07 (8 puntos). Sprint 2 completado: HU-08, HU-09 y HU-10 (9 puntos).** Verificados desde el navegador hasta PostgreSQL.
+- Panel: http://localhost:3000/admin/login. Dos cuentas locales independientes con iguales permisos; acceso privado en `.work/accesos-locales.json`. Inicialización/restablecimiento documentados en README y `scripts/Initialize-Admins.ps1`.
+- Tres contenedores construidos, iniciados y saludables. Persistencia comprobada tras reiniciar los tres servicios, sin eliminar volúmenes ni recursos ajenos.
+- **19/19 pruebas backend y 12/12 pruebas de navegador aprobadas**; lint, tipos, compilación backend y compilación de producción Next.js aprobados.
+- Logotipo real reutilizado en encabezado, login y panel; favicon derivado y tema oscuro coherente. Original y copia tienen SHA-256 idéntico.
+- Pendiente externo: credenciales para verificar Cloudinary contra el servicio real; el flujo de carga local persistente está operativo. WhatsApp comercial, fotografías definitivas, RNF de carga y despliegue continúan fuera de estos sprints.
+
+Las secciones siguientes conservan el historial de etapas; el cierre administrativo y sus evidencias están al final.
+
 ## 2026-11-18 · Etapa 1 ejecutada
 
 - Leídos AGENTS.md, el DOCX completo, los dos diagramas UML y las tres referencias visuales.
@@ -58,7 +69,7 @@
 - Primera compilación de producción heredó NODE_ENV=development: falló al prerenderizar la página de error. Corregido mediante entorno explícito de producción y carpeta temporal independiente.
 - Aviso de exportación anónima de PostCSS corregido. Icono local incorporado y atributo de scroll de Next.js declarado.
 
-## Pendiente de siguientes etapas
+## Pendiente al finalizar la entrega inicial del 18 de noviembre
 
 - HU-06 a HU-10: autenticación, cuentas administrativas independientes, sesiones, panel, alta/edición, publicación y gestión de disponibilidad. No se afirma que autorización o persistencia de edición administrativa estén implementadas.
 - HU-05: configurar número real de WhatsApp y verificar el enlace con ese número. No se enviaron mensajes ni se inventó contacto.
@@ -84,5 +95,55 @@
 - Destino indicado y autorizado por el usuario: https://github.com/14149492/top-walker.git; remoto inicialmente vacío.
 - Rama de entrega: `main`. Se incluyen código, migraciones, lockfiles, documentación original y referencias visuales.
 - `.gitignore` excluye `.env`, dependencias, compilaciones, archivos temporales y capturas/trazas de pruebas. Solo se incorpora `.env.example` con valores de ejemplo.
-- Preparación del primer commit y comprobación del contenido antes del push. Pendiente confirmar la referencia remota después de subir.
+- Primer commit `8f24068` subido a `origin/main`; referencia remota comprobada. Contenido revisado: 65 archivos, sin credenciales detectadas ni archivos excluidos.
 - Esta entrega no cambia funcionalidades; se conservan los resultados de pruebas documentados arriba.
+
+## 2026-11-19 · Implementación de los sprints administrativos
+
+- Revisión de instrucciones, requisitos HU-06 a HU-10, Prisma/migraciones, módulos, páginas, Compose y referencias completada. Se conserva el proyecto existente.
+- Logotipo localizado en `imagenes de referencia/identidad-top-walker.png.png` (604×464). Original conservado; copia en `frontend/public/brand/`, componente `BrandLogo` y configuración centralizada. Favicon derivado, sin rediseñar la marca. Paleta carbón, blanco contenido y bronce discreto.
+- Diseño: sesiones opacas revocables en PostgreSQL; hash scrypt, cookie HttpOnly y comprobación de origen/cabecera en escrituras. Dos cuentas con iguales permisos, inicialización por stdin sin secretos en código ni argumentos.
+- Imágenes: Cloudinary desde backend; modo local explícito para pruebas, con volumen persistente y validación/reprocesado de archivos.
+- Migración administrativa aditiva: usuarios, sesiones, intentos de login, archivos y control de concurrencia en productos. Sin borrar productos existentes.
+- HU-06: módulos de autenticación, guards de NestJS, páginas protegidas en Next.js e inicialización segura mediante `scripts/Initialize-Admins.ps1` y `backend/scripts/init-admins.cjs`. Dos cuentas locales inicializadas con contraseñas aleatorias; accesos guardados únicamente en `.work/accesos-locales.json`, ignorado por Git.
+- HU-07: formulario completo con validaciones, carga y orden de fotografías, categoría, precio único y combinaciones disponibles/agotadas. Guardado atómico en Prisma. Almacenamiento local persistente operativo sin credenciales Cloudinary.
+- HU-08: listado y búsqueda administrativa, edición precargada, conservación de IDs de relaciones retenidas y detección de conflictos por versión.
+- HU-09: publicación, retirada y republicación; los datos permanecen en PostgreSQL. Sin endpoint de borrado físico.
+- HU-10: alta/edición de combinaciones, normalización de colores, rechazo de duplicados y actualización de la ficha y filtros públicos.
+- Pruebas de API administrativas: **8/8 aprobadas** (suite principal y siete escenarios) contra PostgreSQL, con ambas cuentas, CSRF, credenciales, sesión expirada/revocada, archivos válidos e inválidos, escritura, edición, conflicto, variantes y publicación. Los registros de prueba se conservan como demostraciones retiradas.
+- Incidencia corregida: resultado `void` del bloqueo de PostgreSQL incompatible con deserialización Prisma; se selecciona una columna numérica desde la función. Repetición del flujo de alta aprobada.
+- Incidencia corregida: TypeScript no detectaba cambios del montaje Windows de forma consistente; polling configurado para el entorno Docker.
+- Navegador: corregidas las etiquetas accesibles de categoría y descripción precargada, y los botones que aceptaban clic antes de hidratar. La verificación final de los recorridos se registra a continuación.
+- Dependencias: override acotado de `effect` 3.22.5 dentro de `@prisma/config`; `npm audit` del lockfile backend sin vulnerabilidades. No se cambia la versión principal de Prisma.
+- README y documento de modelo actualizados con cuentas, sesiones, controles, imágenes, identidad y comandos reproducibles.
+
+## 2026-11-20 · Cierre de Sprint 1 y Sprint 2
+
+| Historia | Resultado verificado |
+| --- | --- |
+| HU-06 | Acceso por correo/usuario, error de credenciales, protección de todas las rutas solicitadas, cookie HttpOnly/SameSite, sesiones vencidas y cierre con revocación. Ambas cuentas acceden con los mismos permisos. |
+| HU-07 | Registro desde formulario, imágenes reales cargadas al almacenamiento de prueba, categoría, material, descripción, precio único, variantes y fotografía principal. Validaciones de campos y contenido de imagen. |
+| HU-08 | Búsqueda, datos precargados, edición por el segundo administrador, persistencia y cambios visibles públicamente. Se conservan producto/slug/IDs retenidos; se rechazan versiones desactualizadas. |
+| HU-09 | Publicar, retirar y republicar desde el panel. Exclusión pública y conservación de datos/relaciones. |
+| HU-10 | Combinaciones disponibles/agotadas, creación y edición de talla/color, prevención de duplicados y filtros/ficha pública actualizados. |
+
+### Evidencia de verificación
+
+- `docker compose up --build -d --wait`: imágenes reconstruidas e iniciadas; PostgreSQL, NestJS y Next.js saludables. Migraciones inicial y administrativa aplicadas; `prisma validate` y `migrate status` aprobados.
+- Backend: lint, TypeScript y compilación en Docker sin errores. `node --test test/admin.test.mjs test/catalog.test.mjs test/model.test.mjs`: **19 aprobadas, 0 fallidas** (ocho administrativas contando la suite principal, seis del catálogo, cinco del modelo).
+- Frontend: lint y TypeScript aprobados en host y Docker. Compilación de producción mediante `scripts/check-build.mjs` aprobada; reconoce todas las rutas administrativas y públicas. Se conserva el servidor de desarrollo durante esta comprobación.
+- Playwright/Microsoft Edge: **12 aprobadas, 0 fallidas** en 360, 768 y 1920 px. Incluye crear como propietario, editar como ayudante, cargar/reordenar fotos, publicar/retirar/republicar, cambiar talla/color, verificar ficha/filtros, rechazar duplicados/precio inválido, acceso denegado y cierre. Sin errores JavaScript ni desbordamiento horizontal en los recorridos comprobados.
+- Capturas en `frontend/test-results/`; inspeccionados login, formulario, panel y recursos de marca. Trazas y vídeo administrativos desactivados para evitar registrar credenciales.
+- Persistencia: captura de **18 productos con todas sus relaciones, 2 cuentas y 22 archivos locales**, reinicio de db/backend/frontend, espera de salud y comparación idéntica de registros y SHA-256 de imágenes. Se conservan los nueve productos originales. Los productos nuevos de QA quedan identificados como demostrativos y retirados.
+- Copia del logotipo idéntica al original (SHA-256); favicon de 64×64 generado desde la misma imagen, preservando la forma. Su sustitución está centralizada en `frontend/src/lib/brand.ts`.
+- Incidencia de construcción: descarga npm interrumpida por ECONNRESET. Corregida mediante reintento, caché BuildKit acotada al backend y tiempos de descarga limitados; la construcción posterior terminó correctamente. Auditoría backend: **0 vulnerabilidades reportadas**.
+
+### Archivos y entrega
+
+- Datos: `backend/prisma/schema.prisma`, migración `202611190001_administration`.
+- Lógica: módulos `backend/src/auth/`, `admin/`, `media/`, inicializador y pruebas de integración/persistencia.
+- Interfaz: `frontend/src/app/admin/`, componentes administrativos, cliente/servidor HTTP, estilos, marca y pruebas Playwright.
+- Entorno: `compose.yaml` (volumen de imágenes y variables privadas), Dockerfile backend, polling TypeScript y `.env.example`.
+- Documentación: README, este progreso y `documento del proyecto/modelo-datos.md`. Repositorio de entrega: https://github.com/14149492/top-walker.git, rama `main`.
+- `.env`, accesos locales, dependencias y evidencias privadas quedan excluidos de Git. No se publican contraseñas ni sesiones.
+- No se conocen errores pendientes en los recorridos probados. Cloudinary requiere credenciales reales para una comprobación externa; el almacenamiento local de pruebas y sus archivos persistentes ya fueron verificados. Este entorno sigue siendo de desarrollo local.

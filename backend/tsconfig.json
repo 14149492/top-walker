@@ -4,5 +4,6 @@
     "strict": true, "experimentalDecorators": true, "emitDecoratorMetadata": true,
     "esModuleInterop": true, "skipLibCheck": true, "sourceMap": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "watchOptions": { "watchFile": "dynamicPriorityPolling", "watchDirectory": "dynamicPriorityPolling" }
 }

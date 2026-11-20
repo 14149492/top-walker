@@ -1,6 +1,6 @@
 # Modelo de datos de Top Walker
 
-Estado: reglas confirmadas por el usuario el 18 de noviembre de 2026. Fuente funcional: `Top_Walker.docx`, RF/HU-01, 02, 04 y 07–10. Implementación: `backend/prisma/schema.prisma` y migración `202611180001_initial_catalog`.
+Estado: reglas confirmadas por el usuario el 18 de noviembre de 2026, ampliadas con administración el 19 de noviembre. Fuente funcional: `Top_Walker.docx`, RF/HU-01, 02, 04 y 06–10. Implementación: `backend/prisma/schema.prisma` y migraciones `202611180001_initial_catalog` y `202611190001_administration`.
 
 ## Relaciones
 
@@ -9,6 +9,8 @@ erDiagram
     Category ||--o{ Product : clasifica
     Product ||--o{ Variant : ofrece
     Product ||--o{ Photo : muestra
+    MediaAsset o|--o{ Photo : respalda
+    AdminUser ||--o{ AdminSession : autentica
     Category {
         String id PK
         String name UK
@@ -23,6 +25,7 @@ erDiagram
         Decimal price
         Boolean published
         Boolean demo
+        Int version
         DateTime createdAt
         DateTime updatedAt
     }
@@ -39,10 +42,31 @@ erDiagram
         String url
         String alt
         Int position
+        String assetId FK
+    }
+    AdminUser {
+        String id PK
+        String username UK
+        String email UK
+        String displayName
+        String passwordHash
+        Boolean active
+    }
+    AdminSession {
+        String id PK
+        String tokenHash UK
+        String userId FK
+        DateTime expiresAt
+    }
+    MediaAsset {
+        String id PK
+        String provider
+        String storageKey UK
+        String remoteUrl
     }
 ```
 
-Las relaciones permiten guardar un modelo todavía incompleto y no publicado. Para publicarlo, el backend administrativo deberá validar los datos obligatorios de RF-07, sus variantes y una galería con imagen principal. Esa operación administrativa sigue pendiente de implementación.
+El backend administrativo valida los campos obligatorios de RF-07, al menos una variante y una galería con imagen principal tanto al registrar como al editar. Puede guardarse completo pero retirado, sin hacerlo visible. La migración administrativa es aditiva: mantiene productos, variantes, fotos e IDs anteriores.
 
 ## Reglas confirmadas y representación
 
@@ -75,16 +99,16 @@ La talla 38 coincide con el filtro público por su combinación negra. Seleccion
 
 - Ordenar siempre por `position ASC`; el catálogo utiliza la primera fotografía. La convención del escritor es una secuencia `0, 1, 2, ...`.
 - No se añade `isPrimary`: dos fuentes de verdad permitirían que la posición y la marca principal se contradijeran.
-- La base de datos garantiza posiciones no negativas y no repetidas. **No garantiza por sí sola que exista la posición 0 ni que no haya huecos**. La futura escritura administrativa deberá normalizar la secuencia y exigir principal al publicar.
+- La base de datos garantiza posiciones no negativas y no repetidas. **No garantiza por sí sola que exista la posición 0 ni que no haya huecos**. `AdminService` normaliza la secuencia transaccionalmente y exige principal al publicar.
 - Reordenar debe realizarse en una transacción: mover primero las posiciones a un rango temporal libre y después asignar la secuencia definitiva. Así no se viola la unicidad durante un intercambio. Al eliminar una foto, renumerar las restantes en esa misma transacción.
 - Las fotografías pertenecen al modelo, no a cada combinación. No se presupone que cambiar el color cambie la foto.
-- `url` almacena una referencia, no el archivo binario. Podrá apuntar a Cloudinary cuando se configure; las fotos actuales son demostrativas.
+- `url` almacena una referencia, no el archivo binario. Las cargas administrativas enlazan con `MediaAsset` y `/api/media/:id`; el proveedor conserva archivo local o referencia de Cloudinary. `assetId` es opcional para conservar las fotografías demostrativas anteriores sin migrarlas ni sustituirlas.
 
 ## Restricciones y responsabilidades
 
 La migración existente ya aplica claves foráneas, unicidad de slug y categoría, unicidad de combinaciones y posiciones, `price > 0`, `size > 0` y `position >= 0`. Prisma no expresa estos `CHECK` en el esquema: se conservan en el SQL versionado.
 
-Las tallas enteras y los nombres de color se mantienen como en el catálogo actual. El backend de escritura deberá normalizar espacios y la representación de los nombres de color para no registrar, por ejemplo, `Negro` y ` negro ` como opciones distintas. La unicidad actual de PostgreSQL compara el texto almacenado; no sustituye esa normalización.
+Las tallas enteras y los nombres de color se mantienen como en el catálogo actual. El backend de escritura normaliza espacios y mayúsculas para no registrar, por ejemplo, `Negro` y ` negro ` como opciones distintas. La unicidad actual de PostgreSQL compara el texto almacenado; se complementa con esa normalización. Las variantes retenidas conservan sus IDs incluso cuando se intercambian talla/color; solo se eliminan combinaciones que el administrador quitó expresamente del formulario.
 
 No se crean tablas maestras de tallas/colores: el alcance no requiere gestionarlas de forma independiente y las combinaciones ya expresan la oferta de cada producto. La categoría sí tiene entidad propia para compartir su clasificación y filtrar modelos.
 
@@ -94,9 +118,13 @@ Los UUID de productos, variantes y fotos se generan mediante Prisma. Los IDs exi
 
 ## Compatibilidad y límites
 
-La estructura ya implementada es compatible con las seis confirmaciones. Esta tarea documenta el esquema y añade pruebas de sus invariantes; no necesita una nueva migración ni cambia la migración aplicada. No se ejecutan `db push`, reseteos, borrados de registros o eliminación de volúmenes.
+La estructura es compatible con las seis confirmaciones. La ampliación administrativa agrega tablas y columnas mediante migración SQL versionada; no cambia la migración inicial aplicada. No se ejecutan `db push`, reseteos, borrados de productos o eliminación de volúmenes.
 
-La autenticación, cuentas independientes del propietario y ayudante, sesiones y panel siguen en la etapa administrativa (RF-06 a RF-10). Este diseño de catálogo no añade clientes registrados, pedidos, pagos, carrito, fabricación ni inventario cuantitativo. El usuario administrador que publique un modelo deberá ser autorizado por NestJS; el esquema por sí solo no proporciona autenticación.
+`AdminUser` almacena las cuentas independientes de propietario y ayudante, con los mismos permisos. `AdminSession` conserva únicamente el hash del token y su vencimiento; cerrar sesión revoca el registro. `LoginAttempt` conserva claves hash, contador y vencimiento para limitar intentos. No existe registro público de cuentas. `Product.version` permite detectar ediciones concurrentes y rechazar escrituras desactualizadas con HTTP 409.
+
+El nombre normalizado del producto se comprueba dentro de una transacción con bloqueo de PostgreSQL para evitar altas simultáneas duplicadas, sin imponer una restricción nueva sobre posibles datos históricos. Las categorías usan el mismo criterio de normalización. Precio, relaciones, variantes, estado y orden de fotografías se guardan de forma atómica.
+
+Este diseño no añade clientes registrados, pedidos, pagos, carrito, fabricación ni inventario cuantitativo. NestJS autoriza todas las operaciones administrativas; el esquema por sí solo no proporciona autenticación.
 
 ## Verificación reproducible
 

@@ -27,11 +27,18 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
       PORT: 3001
       FRONTEND_ORIGIN: http://localhost:${FRONTEND_PORT:-3000}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      MEDIA_STORAGE: ${MEDIA_STORAGE:-local}
+      UPLOAD_DIR: /app/uploads
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
     ports:
       - '127.0.0.1:${BACKEND_PORT:-3001}:3001'
     volumes:
       - ./backend/src:/app/src
       - ./backend/prisma:/app/prisma
+      - uploads_data:/app/uploads
     networks: [app, data]
     depends_on:
       db:
@@ -77,3 +84,4 @@ networks:
     internal: true
 volumes:
   postgres_data:
+  uploads_data:

@@ -1,0 +1,630 @@
+{
+  "version": 1,
+  "reviewedOn": "2026-11-22",
+  "availabilityConfirmed": false,
+  "decisions": [
+    "Oxford Negro Bs 350 y Oxford Cafe Bs 300 separados por confirmacion del usuario.",
+    "Colores de Luca y Shelby confirmados por el usuario.",
+    "Derby Clasico negro y Derby cafe agrupados: mismo precio y caracteristicas.",
+    "Rangos anunciados; ninguna disponibilidad inferida de las fotos."
+  ],
+  "products": [
+    {
+      "key": "mustang",
+      "name": "Mustang",
+      "price": "350",
+      "category": "botines",
+      "material": "100% cuero",
+      "sole": "Super ligeras",
+      "insole": "Piel de res y acolchado",
+      "lining": "Piel de res y esponja",
+      "details": "Cordones encerados. Cierre metalico.",
+      "description": "Mustang, elaborado en 100% cuero, con plantas super ligeras, plantilla interna de piel de res y acolchado, y forro de piel de res y esponja.",
+      "announcedSizes": [
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "photos": [
+        {
+          "file": "mustang/cafe-combinado.webp",
+          "color": "Cafe combinado",
+          "alt": "Mustang - Cafe combinado",
+          "source": "Gemini_Generated_Image_bjh6hebjh6hebjh6 (1).jpg",
+          "sourceSha256": "0a2cf4a17700a48793db52861ec1cab86c75665204edeac6b4828229c0e4c5f0",
+          "sha256": "3f273bab2674d3bc1fd20526e8c8a7898a45f42db268dd2523cba6bfc2ba4463",
+          "crop": [
+            0,
+            0,
+            1792,
+            1598
+          ]
+        },
+        {
+          "file": "mustang/cafe.webp",
+          "color": "Cafe",
+          "alt": "Mustang - Cafe",
+          "source": "Gemini_Generated_Image_bjh6hebjh6hebjh6 (2).jpg",
+          "sourceSha256": "465dff5194ca85ac14e05f81cd7b14e4ea92727549d1e63fd6a6b7f40ddc9c3d",
+          "sha256": "57c1c85f7f94be9bfeebe0e3bb278bc74f3fcf89de5b45a2c4eca5c82aea3192",
+          "crop": [
+            0,
+            0,
+            1792,
+            1720
+          ]
+        },
+        {
+          "file": "mustang/negro.webp",
+          "color": "Negro",
+          "alt": "Mustang - Negro",
+          "source": "Gemini_Generated_Image_bjh6hebjh6hebjh6.jpg",
+          "sourceSha256": "b46ef5c3cf3a699f182ae54923dd1be69e2a568c4d0fb5c4e36cd71ddf410ec0",
+          "sha256": "4d00f045fb1f142ee1d67b83695efa1723c493622604b64485f93d60fbae6617",
+          "crop": [
+            140,
+            0,
+            1650,
+            1625
+          ]
+        },
+        {
+          "file": "mustang/negro-combinado.webp",
+          "color": "Negro combinado",
+          "alt": "Mustang - Negro combinado",
+          "source": "Gemini_Generated_Image_o0qg7qo0qg7qo0qg (4).jpg",
+          "sourceSha256": "af436b010aa99b3953cfda966099734a8aea5b28adf64d7b21756cd0e4cd5cec",
+          "sha256": "7bbcb2faec62c45ceb8c5e3b5b0b5adbda7b8e660c43adc17086756025847a0a",
+          "crop": [
+            0,
+            0,
+            1792,
+            1703
+          ]
+        }
+      ]
+    },
+    {
+      "key": "rockstar",
+      "name": "Rockstar",
+      "price": "350",
+      "category": "botines",
+      "material": "100% cuero",
+      "sole": "Super ligeras",
+      "insole": "Piel de res y acolchado",
+      "lining": "Piel de res y esponja",
+      "details": "Cordones encerados. Cierre metalico.",
+      "description": "Rockstar, elaborado en 100% cuero, con plantas super ligeras, plantilla interna de piel de res y acolchado, y forro de piel de res y esponja.",
+      "announcedSizes": [
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "photos": [
+        {
+          "file": "rockstar/negro.webp",
+          "color": "Negro",
+          "alt": "Rockstar - Negro",
+          "source": "Gemini_Generated_Image_bjh6hebjh6hebjh6 (3).jpg",
+          "sourceSha256": "70393deebf43d5865809a6f8ec6192c33804ff33595e35c8913ddbf27e357250",
+          "sha256": "6d966b149cd2000520b20b01a1bd3a313ac209a24f0e4ec4fd06f8acc1466eb8",
+          "crop": [
+            0,
+            0,
+            1792,
+            1695
+          ]
+        },
+        {
+          "file": "rockstar/cafe.webp",
+          "color": "Cafe",
+          "alt": "Rockstar - Cafe",
+          "source": "Gemini_Generated_Image_ewwqf0ewwqf0ewwq.jpg",
+          "sourceSha256": "ff3810fb4fa5eb886f6f9ab5d4638dad76eb5fcf724cc47b8cb666dee9677283",
+          "sha256": "64144f4309d124b340f393d1fb887319840a23d57a2930e558acb92fadb5cd60",
+          "crop": [
+            0,
+            0,
+            1792,
+            1617
+          ]
+        },
+        {
+          "file": "rockstar/negro-combinado.webp",
+          "color": "Negro combinado",
+          "alt": "Rockstar - Negro combinado",
+          "source": "Gemini_Generated_Image_o0qg7qo0qg7qo0qg (3).jpg",
+          "sourceSha256": "7e3824bbbe63c173e377c0eee18f0a8ab523eda48242407d02d055a43e4432d6",
+          "sha256": "633f4ee1c4588ff3c383657d0e34397d1a0a2a56f1b55039c1e50ffd33fe5847",
+          "crop": [
+            0,
+            0,
+            1792,
+            1694
+          ]
+        },
+        {
+          "file": "rockstar/camel.webp",
+          "color": "Camel",
+          "alt": "Rockstar - Camel",
+          "source": "Gemini_Generated_Image_ov2zr4ov2zr4ov2z (1).jpg",
+          "sourceSha256": "ff8f72c19963f59d253923f76f83d8d0ec7d8aa5bd07967ace77e1ca8f777874",
+          "sha256": "15d459f66abc78384d172464bcbd8765b03030d05ff8f017523d48faebf13cd5",
+          "crop": [
+            0,
+            0,
+            1792,
+            1615
+          ]
+        }
+      ]
+    },
+    {
+      "key": "shelby",
+      "name": "Shelby",
+      "price": "350",
+      "category": "botines",
+      "material": "100% cuero",
+      "sole": "Super ligeras antideslizantes",
+      "insole": "Piel de res y acolchado",
+      "lining": "Piel de res badana",
+      "details": "Negro en cuero liso; gris y cafe en cuero volcado.",
+      "description": "Shelby, elaborado en 100% cuero, con plantas super ligeras antideslizantes, plantilla interna de piel de res y acolchado, y forro de piel de res badana.",
+      "announcedSizes": [
+        38,
+        39,
+        40,
+        41,
+        42
+      ],
+      "photos": [
+        {
+          "file": "shelby/negro.webp",
+          "color": "Negro",
+          "alt": "Shelby - Negro",
+          "source": "Gemini_Generated_Image_o0qg7qo0qg7qo0qg (1).jpg",
+          "sourceSha256": "546f12b2a5aa0303772153241c72fdaa805e77b076475165caaebe00645f7f40",
+          "sha256": "cf0c9e81a103cea9094132a713271afba487674cd22dde38b40c5f55463b18a9",
+          "crop": [
+            0,
+            0,
+            1792,
+            1790
+          ]
+        },
+        {
+          "file": "shelby/gris.webp",
+          "color": "Gris",
+          "alt": "Shelby - Gris",
+          "source": "Gemini_Generated_Image_ti22tfti22tfti22 (5).jpg",
+          "sourceSha256": "257d0a09b57a1d2e396121fc9898ab030231ee473c6f109696bf16783158ac91",
+          "sha256": "ad7bb1f23fd7c0b385179b6ed3ae978a070f5fca81e1669f4192a1f6266d2cc6",
+          "crop": [
+            0,
+            0,
+            1792,
+            1790
+          ]
+        },
+        {
+          "file": "shelby/cafe.webp",
+          "color": "Cafe",
+          "alt": "Shelby - Cafe",
+          "source": "Gemini_Generated_Image_ti22tfti22tfti22.jpg",
+          "sourceSha256": "768aaae5d81f603a25620dea2464013bee078c01e9f6d736160cf7d664c3b523",
+          "sha256": "99e8cdc510f6f6a05993a31aefb8fb83a2cc6f3740b2549d6e6a4026448a4a13",
+          "crop": [
+            0,
+            0,
+            1792,
+            1790
+          ]
+        }
+      ]
+    },
+    {
+      "key": "thunder",
+      "name": "Thunder",
+      "price": "320",
+      "category": "botines",
+      "material": "100% cuero",
+      "sole": "Super ligeras",
+      "insole": "Piel de res y acolchado",
+      "lining": "Piel de res y esponja",
+      "details": "Cordones encerados. Cierre metalico.",
+      "description": "Thunder, elaborado en 100% cuero, con plantas super ligeras, plantilla interna de piel de res y acolchado, y forro de piel de res y esponja.",
+      "announcedSizes": [
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "photos": [
+        {
+          "file": "thunder/negro.webp",
+          "color": "Negro",
+          "alt": "Thunder - Negro",
+          "source": "Gemini_Generated_Image_o0qg7qo0qg7qo0qg (2).jpg",
+          "sourceSha256": "f719575a7509b6a008397efbae9a2cefd14b1295baca7706f5a9ba9f224d0721",
+          "sha256": "fda632c0f931ce7634deac0b40ba47ee2c64fba596c00ba49c2e9d4dd5957a4b",
+          "crop": [
+            0,
+            0,
+            1792,
+            1676
+          ]
+        },
+        {
+          "file": "thunder/nuez.webp",
+          "color": "Nuez",
+          "alt": "Thunder - Nuez",
+          "source": "Gemini_Generated_Image_txs6lftxs6lftxs6.jpg",
+          "sourceSha256": "80333ed96b45201a6043a440568bc06cdb474dd1c7a121781aebc696d4bda996",
+          "sha256": "38e6f14072f163f1b1b8c1a8b35f82c054b2bf72bafb686d0c006de9dcd8c555",
+          "crop": [
+            0,
+            0,
+            1792,
+            1644
+          ]
+        }
+      ]
+    },
+    {
+      "key": "luca",
+      "name": "Luca",
+      "price": "350",
+      "category": "botines",
+      "material": "100% cuero",
+      "sole": "Super ligeras antideslizantes",
+      "insole": "Piel de res y acolchado",
+      "lining": "Piel de res y esponja",
+      "details": "Elastico reforzado trenzado.",
+      "description": "Luca, elaborado en 100% cuero, con plantas super ligeras antideslizantes, plantilla interna de piel de res y acolchado, y forro de piel de res y esponja.",
+      "announcedSizes": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "photos": [
+        {
+          "file": "luca/negro.webp",
+          "color": "Negro",
+          "alt": "Luca - Negro",
+          "source": "Gemini_Generated_Image_o0qg7qo0qg7qo0qg.jpg",
+          "sourceSha256": "d3bea482cd3b8fd3b2ca9ce24a76e5c2ebd1183c5f351dd49b129f60b6259668",
+          "sha256": "46ff2bce334078b167fa918354a2570ffbc65974fd6ad06ae4296f695bff6340",
+          "crop": [
+            0,
+            0,
+            1792,
+            1642
+          ]
+        }
+      ]
+    },
+    {
+      "key": "shadow",
+      "name": "Shadow",
+      "price": "320",
+      "category": "botines",
+      "material": "100% cuero",
+      "sole": "Super ligeras",
+      "insole": "Piel de res y acolchado",
+      "lining": "Piel de res y esponja",
+      "details": "Cordones encerados. Hebilla metalica.",
+      "description": "Shadow, elaborado en 100% cuero, con plantas super ligeras, plantilla interna de piel de res y acolchado, y forro de piel de res y esponja.",
+      "announcedSizes": [
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "photos": [
+        {
+          "file": "shadow/cafe.webp",
+          "color": "Cafe",
+          "alt": "Shadow - Cafe",
+          "source": "Gemini_Generated_Image_ov2zr4ov2zr4ov2z (2).jpg",
+          "sourceSha256": "4aaa15270d644d96fa62207306dcb8a56dd82bff80367a61e89b796d2af881b3",
+          "sha256": "719012ffedcedf16a28e3a27b0042b0c7e7d529359faf3f86751f2333bd56249",
+          "crop": [
+            0,
+            0,
+            1792,
+            1689
+          ]
+        },
+        {
+          "file": "shadow/negro.webp",
+          "color": "Negro",
+          "alt": "Shadow - Negro",
+          "source": "Gemini_Generated_Image_txs6lftxs6lftxs6 (3).jpg",
+          "sourceSha256": "1fce023ddad672550339da04df9d1bb43dc7f00368a0adb883ba2de6e37a93a2",
+          "sha256": "4fa0b83a0ad3274a72bb7801913987117380cdb51105c84023afb6317d7238ac",
+          "crop": [
+            0,
+            0,
+            1792,
+            1602
+          ]
+        }
+      ]
+    },
+    {
+      "key": "zero",
+      "name": "Zero",
+      "price": "320",
+      "category": "botines",
+      "material": "100% cuero",
+      "sole": "Super ligeras",
+      "insole": "Piel de res y acolchado",
+      "lining": "Piel de res y esponja",
+      "details": "Cordones encerados.",
+      "description": "Zero, elaborado en 100% cuero, con plantas super ligeras, plantilla interna de piel de res y acolchado, y forro de piel de res y esponja.",
+      "announcedSizes": [
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "photos": [
+        {
+          "file": "zero/cafe.webp",
+          "color": "Cafe",
+          "alt": "Zero - Cafe",
+          "source": "Gemini_Generated_Image_ov2zr4ov2zr4ov2z (3).jpg",
+          "sourceSha256": "fb97c298e4caf5f2746a9337328b1dc138207889ce33efed74d7bafdf76a023b",
+          "sha256": "285059c2ee84a61c1a86c7a05ed22363dfacb58163279f600dc4da0b33414316",
+          "crop": [
+            0,
+            0,
+            1792,
+            1754
+          ]
+        },
+        {
+          "file": "zero/negro.webp",
+          "color": "Negro",
+          "alt": "Zero - Negro",
+          "source": "Gemini_Generated_Image_ov2zr4ov2zr4ov2z (5).jpg",
+          "sourceSha256": "db04230a575b6820b68b04198bcfa3dd272fbd1896e2dd74e0ef7954c39e388d",
+          "sha256": "023afb230fc776f82adac80f0847e8dcd7122337a0a0e1bf7422859f341d3bf5",
+          "crop": [
+            0,
+            0,
+            1792,
+            1757
+          ]
+        }
+      ]
+    },
+    {
+      "key": "classic",
+      "name": "Classic",
+      "price": "320",
+      "category": "botines",
+      "material": "100% cuero",
+      "sole": "Super ligeras",
+      "insole": "Piel de res y acolchado",
+      "lining": "Piel de res y esponja",
+      "details": "Cordones encerados.",
+      "description": "Classic, elaborado en 100% cuero, con plantas super ligeras, plantilla interna de piel de res y acolchado, y forro de piel de res y esponja.",
+      "announcedSizes": [
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "photos": [
+        {
+          "file": "classic/negro.webp",
+          "color": "Negro",
+          "alt": "Classic - Negro",
+          "source": "Gemini_Generated_Image_ov2zr4ov2zr4ov2z.jpg",
+          "sourceSha256": "e9ed02828333e0a834572c30ccaa4494b88078ec67d266c155ba48478848928b",
+          "sha256": "379b357d70e175b348009aac321ab7b4d01d37ee03162002e65202cb5ac08517",
+          "crop": [
+            0,
+            0,
+            1792,
+            1730
+          ]
+        }
+      ]
+    },
+    {
+      "key": "oxford-negro",
+      "name": "Oxford Negro",
+      "price": "350",
+      "category": "oxford",
+      "material": "100% cuero",
+      "sole": "Caucho/goma",
+      "insole": "Piel de res y acolchado",
+      "lining": "Piel de res",
+      "details": "",
+      "description": "Oxford Negro, elaborado en 100% cuero, con plantas caucho/goma, plantilla interna de piel de res y acolchado, y forro de piel de res.",
+      "announcedSizes": [
+        38,
+        39,
+        40,
+        41,
+        42
+      ],
+      "photos": [
+        {
+          "file": "oxford-negro/negro.webp",
+          "color": "Negro",
+          "alt": "Oxford Negro - Negro",
+          "source": "Gemini_Generated_Image_ti22tfti22tfti22 (1).jpg",
+          "sourceSha256": "620ce3b080cefc768861117fb8725b85324fded8334b1716485b7f80667a9945",
+          "sha256": "8506ad181a0e11bec2e1b362d6a39efa1754c01d4aa55110c458e3128137b243",
+          "crop": [
+            0,
+            0,
+            1792,
+            1790
+          ]
+        }
+      ]
+    },
+    {
+      "key": "derby",
+      "name": "Derby",
+      "price": "300",
+      "category": "derby",
+      "material": "100% cuero",
+      "sole": "Caucho/goma",
+      "insole": "Piel de res y acolchado",
+      "lining": "Piel de res",
+      "details": "",
+      "description": "Derby, elaborado en 100% cuero, con plantas caucho/goma, plantilla interna de piel de res y acolchado, y forro de piel de res.",
+      "announcedSizes": [
+        38,
+        39,
+        40,
+        41,
+        42
+      ],
+      "photos": [
+        {
+          "file": "derby/negro.webp",
+          "color": "Negro",
+          "alt": "Derby - Negro",
+          "source": "Gemini_Generated_Image_ti22tfti22tfti22 (2).jpg",
+          "sourceSha256": "bfdbf472cae13c14b653a2741505f05ea921fe797d4f44fde9d2c6b654612854",
+          "sha256": "e73ff86812e30565a4b6b78185ba389e11d9193ce10071b7def2052d860afa02",
+          "crop": [
+            0,
+            0,
+            1792,
+            1789
+          ]
+        },
+        {
+          "file": "derby/cafe.webp",
+          "color": "Cafe",
+          "alt": "Derby - Cafe",
+          "source": "Gemini_Generated_Image_ti22tfti22tfti22 (4).jpg",
+          "sourceSha256": "ad95ab50c44b7305ce627dcb2627c6403fc5d603269e988d2f9b8745291ffe94",
+          "sha256": "dd05db815d1adaaa72df8d01b17632fd1a2b5b8c4e50a62bbffd8a6bdffec68b",
+          "crop": [
+            0,
+            0,
+            1792,
+            1790
+          ]
+        }
+      ]
+    },
+    {
+      "key": "oxford-cafe",
+      "name": "Oxford Cafe",
+      "price": "300",
+      "category": "oxford",
+      "material": "100% cuero",
+      "sole": "Caucho/goma",
+      "insole": "Piel de res y acolchado",
+      "lining": "Piel de res",
+      "details": "",
+      "description": "Oxford Cafe, elaborado en 100% cuero, con plantas caucho/goma, plantilla interna de piel de res y acolchado, y forro de piel de res.",
+      "announcedSizes": [
+        38,
+        39,
+        40,
+        41,
+        42
+      ],
+      "photos": [
+        {
+          "file": "oxford-cafe/cafe.webp",
+          "color": "Cafe",
+          "alt": "Oxford Cafe - Cafe",
+          "source": "Gemini_Generated_Image_ti22tfti22tfti22 (3).jpg",
+          "sourceSha256": "fa7ab2dbb3fc244ea69c45f6aa377f986284334aeee12bd5c3324b429684e013",
+          "sha256": "08554f623f570787f244932962e0fcdeaf8e4a2523330faafddf45ae42d8cebb",
+          "crop": [
+            0,
+            0,
+            1792,
+            1790
+          ]
+        }
+      ]
+    },
+    {
+      "key": "viper",
+      "name": "Viper",
+      "price": "320",
+      "category": "botines",
+      "material": "100% cuero combinado",
+      "sole": "Super ligeras",
+      "insole": "Piel de res y acolchado",
+      "lining": "Piel de res y esponja",
+      "details": "Cordones encerados. Cierre metalico.",
+      "description": "Viper, elaborado en 100% cuero combinado, con plantas super ligeras, plantilla interna de piel de res y acolchado, y forro de piel de res y esponja.",
+      "announcedSizes": [
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "photos": [
+        {
+          "file": "viper/cafe.webp",
+          "color": "Cafe",
+          "alt": "Viper - Cafe",
+          "source": "Gemini_Generated_Image_txs6lftxs6lftxs6 (1).jpg",
+          "sourceSha256": "a923c9607b88f744f76383f67966838b9b4b1c0d28655890d670bc62856349c4",
+          "sha256": "7f0b059ed7c2cb971975b4ff1aa3913304d97cb83087d9f580d4ceaac606d371",
+          "crop": [
+            0,
+            0,
+            1792,
+            1568
+          ]
+        },
+        {
+          "file": "viper/negro.webp",
+          "color": "Negro",
+          "alt": "Viper - Negro",
+          "source": "Gemini_Generated_Image_txs6lftxs6lftxs6 (2).jpg",
+          "sourceSha256": "c673ce1ed602f6a8011b076620ef44d5c578adf8ea8d8412abc400b31f21b66e",
+          "sha256": "e2f718dbd4210b8b54e9e48888e0609cbd4ff7c4b50b6158305a69b9b56f4406",
+          "crop": [
+            0,
+            0,
+            1792,
+            1663
+          ]
+        }
+      ]
+    }
+  ]
+}

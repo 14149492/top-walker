@@ -4,6 +4,10 @@ Catálogo público y administración de calzados. Entorno local de desarrollo co
 
 ## Informacion comercial y caracteristicas
 
+La etapa comercial usa 12 fichas y 25 fotografias proporcionadas en `zapatos1`. Guia completa: [catalogo comercial, importacion y estadisticas](documento%20del%20proyecto/catalogo-comercial.md). Para importar en un clon: `docker compose exec backend npm run catalog:import -- --publish`. Puede repetirse sin duplicar ni sobrescribir ediciones manuales. Las tallas importadas se anuncian sin afirmar existencias hasta que el administrador confirme la disponibilidad.
+
+El logotipo TW del encabezado abre `/admin` (o redirige a `/admin/login` si no hay sesion); el nombre Top Walker vuelve al inicio. El panel incluye `/admin/estadisticas` y eliminacion logica con confirmacion. Retirar permite republicar; Eliminar oculta el producto del listado activo y conserva datos e historial. WhatsApp usa el numero de prueba configurable `59176928024`. Los informes registran interes, no ventas ni personas unicas. La pagina `/privacidad` explica la retencion de 365 dias.
+
 La presentacion comercial de Top Walker describe un emprendimiento boliviano de calzados en 100% cuero con diseños en tendencia. En el panel, al registrar o editar un modelo, la seccion **Caracteristicas del calzado** permite especificar plantas, plantilla interna y forro interno. Son campos opcionales por modelo; solo los completados aparecen en la ficha publica. Las tallas se administran por combinacion con color, no como un rango de texto. La migracion `202611200001_product_characteristics` agrega estos datos sin reemplazar los productos existentes.
 
 ## Arquitectura cliente-servidor y tres capas

@@ -20,7 +20,7 @@ export function AdminNav() {
   return <><nav className="admin-nav" aria-label="Administracion">
     <Link href="/admin" aria-current={pathname === '/admin' ? 'page' : undefined}>Panel</Link>
     <Link href="/admin/productos" aria-current={pathname.startsWith('/admin/productos') ? 'page' : undefined}>Productos</Link>
-    <Link href="/catalogo">Ver catalogo</Link>
+    <Link href="/admin/estadisticas" aria-current={pathname.startsWith('/admin/estadisticas') ? 'page' : undefined}>Estadisticas</Link><Link href="/catalogo">Ver catalogo</Link>
     <button type="button" onClick={logout} disabled={!ready || pending}>{pending ? 'Cerrando…' : 'Cerrar sesion'}</button>
   </nav>{error && <p className="form-error" role="alert">{error}</p>}</>;
 }

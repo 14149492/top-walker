@@ -73,10 +73,10 @@ export function ProductForm({ product, categories: initialCategories, provider }
     setPending(true);
     const body = {
       name: fields.get('name'), description: fields.get('description'), material: fields.get('material'), price, categoryId,
-      sole: fields.get('sole'), insole: fields.get('insole'), lining: fields.get('lining'),
+      sole: fields.get('sole'), insole: fields.get('insole'), lining: fields.get('lining'), details: fields.get('details'),
       published: fields.get('published') === 'on', demo: fields.get('demo') === 'on',
-      variants: variants.map(v => ({ ...(v.id ? { id: v.id } : {}), size: v.size, color: v.color, available: v.available })),
-      photos: photos.map(p => ({ ...(p.id ? { id: p.id } : {}), ...(p.assetId ? { assetId: p.assetId } : {}), alt: p.alt })),
+      variants: variants.map(v => ({ ...(v.id ? { id: v.id } : {}), size: v.size, color: v.color, available: v.available, availabilityConfirmed: v.availabilityConfirmed ?? true })),
+      photos: photos.map(p => ({ ...(p.id ? { id: p.id } : {}), ...(p.assetId ? { assetId: p.assetId } : {}), alt: p.alt, color: p.color || null })),
       ...(product ? { version: product.version } : {}),
     };
     try {
@@ -97,7 +97,7 @@ export function ProductForm({ product, categories: initialCategories, provider }
     </div></fieldset>
 
     <fieldset disabled={!ready || busy} className="form-section"><legend>Caracteristicas del calzado</legend><p className="section-help">Completa los datos que correspondan a este modelo. Los campos vacios no se mostraran en el catalogo.</p><div className="form-grid">
-      <label>Plantas<input name="sole" defaultValue={product?.sole || ''} maxLength={200} placeholder="Ej. Super ligeras antideslizantes" /></label>
+      <label className="span-two">Otros detalles<textarea name="details" defaultValue={product?.details || ''} maxLength={1000} rows={3} placeholder="Cordones, cierre, acabados..." /></label><label>Plantas<input name="sole" defaultValue={product?.sole || ''} maxLength={200} placeholder="Ej. Super ligeras antideslizantes" /></label>
       <label>Plantilla interna<input name="insole" defaultValue={product?.insole || ''} maxLength={200} placeholder="Ej. Piel de res y acolchado" /></label>
       <label className="span-two">Forro interno<input name="lining" defaultValue={product?.lining || ''} maxLength={200} placeholder="Ej. Piel de res badana" /></label>
     </div></fieldset>
@@ -106,20 +106,20 @@ export function ProductForm({ product, categories: initialCategories, provider }
       <div className="variant-list">{variants.map((variant, index) => <div className="variant-row" key={variant.id || `new-${index}`}>
         <label>Color {index + 1}<input value={variant.color} onChange={e => changeVariant(index, { color: e.target.value })} required maxLength={40} placeholder="Negro" /></label>
         <label>Talla {index + 1}<input type="number" value={variant.size || ''} onChange={e => changeVariant(index, { size: Number(e.target.value) })} min={1} max={60} step={1} required /></label>
-        <label className="check-label"><input type="checkbox" checked={variant.available} onChange={e => changeVariant(index, { available: e.target.checked })} aria-label={`Disponible ${index + 1}`} /><span>{variant.available ? 'Disponible' : 'Agotado'}</span></label>
-        <button className="text-button" type="button" disabled={variants.length <= 1} onClick={() => setVariants(current => current.filter((_, i) => i !== index))} aria-label={`Quitar combinacion ${index + 1}`}>Quitar</button>
+        <label className="check-label"><input type="checkbox" checked={variant.available} onChange={e => changeVariant(index, { available: e.target.checked, availabilityConfirmed: true })} aria-label={`Disponible ${index + 1}`} /><span>{variant.availabilityConfirmed === false ? 'Por confirmar' : variant.available ? 'Disponible' : 'Agotado'}</span></label>
+        <label className="check-label"><input type="checkbox" checked={variant.availabilityConfirmed !== false} onChange={e => changeVariant(index, { availabilityConfirmed: e.target.checked, ...(e.target.checked ? {} : { available: false }) })} aria-label={`Confirmada ${index + 1}`} /><span>Confirmada</span></label><button className="text-button" type="button" disabled={variants.length <= 1} onClick={() => setVariants(current => current.filter((_, i) => i !== index))} aria-label={`Quitar combinacion ${index + 1}`}>Quitar</button>
       </div>)}</div>
       <button className="button secondary" type="button" disabled={variants.length >= 120} onClick={() => setVariants(current => [...current, { color: '', size: 40, available: true }])}>Añadir combinacion</button>
     </fieldset>
 
-    <fieldset disabled={!ready || busy} className="form-section"><legend>Fotografias</legend><p className="section-help">Hasta 8 imagenes JPG, PNG o WebP de 5 MB. La primera sera la fotografia principal.</p>
+    <fieldset id="fotografias" disabled={!ready || busy} className="form-section"><legend>Fotografias</legend><p className="section-help">Hasta 8 imagenes JPG, PNG o WebP de 5 MB. La primera sera la fotografia principal.</p>
       {provider === 'local' && <p className="storage-note">Modo de prueba local: las fotografias se conservan en este entorno.</p>}
       <label className="upload-label">Añadir fotografias<input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={upload} disabled={photos.length >= 8} /></label>
       <div className="photo-editor">{photos.map((photo, index) => <article className="photo-editor-card" key={photo.id || photo.assetId}>
         <div className="photo-editor-preview">{photo.url.startsWith('/demo/') ? <ProductPhoto photo={photo} /> : <Image src={photo.url} alt={photo.alt || 'Fotografia del modelo'} width={360} height={240} unoptimized />}</div>
         <span className="photo-order">{index === 0 ? 'Fotografia principal' : `Fotografia ${index + 1}`}</span>
         <label>Texto alternativo {index + 1}<input value={photo.alt} required maxLength={160} onChange={e => setPhotos(current => current.map((row, i) => i === index ? { ...row, alt: e.target.value } : row))} /></label>
-        <div className="photo-actions">{index > 0 && <button type="button" className="text-button" onClick={() => makePrimary(index)}>Hacer principal</button>}<button type="button" className="text-button" disabled={index === 0} onClick={() => movePhoto(index, -1)} aria-label={`Mover foto ${index + 1} antes`}>Antes</button><button type="button" className="text-button" disabled={index === photos.length - 1} onClick={() => movePhoto(index, 1)} aria-label={`Mover foto ${index + 1} despues`}>Despues</button><button type="button" className="text-button danger-text" onClick={() => setPhotos(current => current.filter((_, i) => i !== index))} aria-label={`Quitar foto ${index + 1}`}>Quitar</button></div>
+        <label>Color de foto {index + 1}<input value={photo.color || ''} maxLength={40} onChange={e => setPhotos(current => current.map((row, i) => i === index ? { ...row, color: e.target.value } : row))} placeholder="Opcional" /></label><div className="photo-actions">{index > 0 && <button type="button" className="text-button" onClick={() => makePrimary(index)}>Hacer principal</button>}<button type="button" className="text-button" disabled={index === 0} onClick={() => movePhoto(index, -1)} aria-label={`Mover foto ${index + 1} antes`}>Antes</button><button type="button" className="text-button" disabled={index === photos.length - 1} onClick={() => movePhoto(index, 1)} aria-label={`Mover foto ${index + 1} despues`}>Despues</button><button type="button" className="text-button danger-text" onClick={() => setPhotos(current => current.filter((_, i) => i !== index))} aria-label={`Quitar foto ${index + 1}`}>Quitar</button></div>
       </article>)}</div>
     </fieldset>
 

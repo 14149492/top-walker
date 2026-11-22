@@ -58,7 +58,7 @@ services:
       NODE_ENV: development
       NEXT_TELEMETRY_DISABLED: 1
       API_INTERNAL_URL: http://backend:3001/api
-      WHATSAPP_NUMBER: ${WHATSAPP_NUMBER:-}
+      WHATSAPP_NUMBER: ${WHATSAPP_NUMBER:-59176928024}
       PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-http://localhost:3000}
       WATCHPACK_POLLING: 'true'
     ports:

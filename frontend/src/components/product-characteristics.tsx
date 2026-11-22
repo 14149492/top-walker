@@ -7,7 +7,8 @@ export function ProductCharacteristics({ product }: { product: Product }) {
     ['Plantas', product.sole],
     ['Plantilla interna', product.insole],
     ['Forro interno', product.lining],
-    ['Tallas del modelo', sizes.join(', ')],
+    ['Otros detalles', product.details],
+    ['Tallas anunciadas', sizes.join(', ')],
   ].filter(([, value]) => value?.trim());
 
   return <section className="product-characteristics" aria-label="Caracteristicas del calzado">

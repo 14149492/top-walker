@@ -13,11 +13,11 @@ type Transaction = Prisma.TransactionClient;
 export class AdminService {
   constructor(private readonly db: PrismaService) {}
   async list(q?: string) {
-    return this.db.product.findMany({ where: await productNameFilter(this.db, q), include, orderBy: [{ updatedAt: 'desc' }, { id: 'asc' }] });
+    return this.db.product.findMany({ where: { deletedAt: null, ...await productNameFilter(this.db, q) }, include, orderBy: [{ updatedAt: 'desc' }, { id: 'asc' }] });
   }
   async detail(id: string) {
     const product = await this.db.product.findUnique({ where: { id }, include });
-    if (!product) throw new NotFoundException('Modelo no encontrado.');
+    if (!product || product.deletedAt) throw new NotFoundException('Modelo no encontrado.');
     return product;
   }
   categories() { return this.db.category.findMany({ orderBy: { name: 'asc' } }); }
@@ -48,7 +48,7 @@ export class AdminService {
   private async save(tx: Transaction, dto: ProductDto, id?: string) {
     await this.validate(tx, dto, id);
     const existing = id ? await tx.product.findUnique({ where: { id }, include }) : null;
-    if (id && !existing) throw new NotFoundException('Modelo no encontrado.');
+    if (id && (!existing || existing.deletedAt)) throw new NotFoundException('Modelo no encontrado.');
     if (existing && dto.version === undefined) throw new BadRequestException('Falta la versión del modelo. Vuelve a abrir el formulario.');
     const data = {
       name: dto.name, description: dto.description, material: dto.material, categoryId: dto.categoryId, price: dto.price, published: dto.published, demo: dto.demo,
@@ -56,10 +56,11 @@ export class AdminService {
       sole: dto.sole === undefined ? undefined : dto.sole || null,
       insole: dto.insole === undefined ? undefined : dto.insole || null,
       lining: dto.lining === undefined ? undefined : dto.lining || null,
+      details: dto.details === undefined ? undefined : dto.details || null,
     };
     let productId: string;
     if (existing) {
-      const updated = await tx.product.updateMany({ where: { id: existing.id, version: dto.version }, data: { ...data, version: { increment: 1 } } });
+      const updated = await tx.product.updateMany({ where: { id: existing.id, version: dto.version, deletedAt: null }, data: { ...data, version: { increment: 1 } } });
       if (!updated.count) throw new ConflictException('Otro administrador modificó el modelo. Recarga antes de guardar.');
       productId = existing.id;
     } else {
@@ -82,7 +83,9 @@ export class AdminService {
     for (const variant of dto.variants) {
       const lowerColor = normalized(variant.color);
       const color = lowerColor.charAt(0).toUpperCase() + lowerColor.slice(1);
-      const variantData = { size: variant.size, color, available: variant.available };
+      const availabilityConfirmed = variant.availabilityConfirmed ?? (variant.available ? true : originalVariants.find(v => v.id === variant.id)?.availabilityConfirmed ?? true);
+      if (variant.available && !availabilityConfirmed) throw new BadRequestException('Confirma la disponibilidad antes de marcar una combinacion disponible.');
+      const variantData = { size: variant.size, color, available: variant.available, availabilityConfirmed };
       if (variant.id) await tx.variant.update({ where: { id: variant.id }, data: variantData });
       else await tx.variant.create({ data: { ...variantData, productId } });
     }
@@ -93,11 +96,11 @@ export class AdminService {
     for (const [position, photo] of dto.photos.entries()) {
       const old = originalPhotos.find(p => p.id === photo.id);
       if (old && photo.assetId && photo.assetId !== old.assetId) throw new BadRequestException('Para sustituir una foto, añade el archivo nuevo y retira la anterior.');
-      if (old) await tx.photo.update({ where: { id: old.id }, data: { position, alt: photo.alt } });
+      if (old) await tx.photo.update({ where: { id: old.id }, data: { position, alt: photo.alt, color: photo.color === undefined ? undefined : photo.color || null } });
       else {
         const asset = photo.assetId ? await tx.mediaAsset.findUnique({ where: { id: photo.assetId } }) : null;
         if (!asset) throw new BadRequestException('Carga las fotografías antes de guardar.');
-        await tx.photo.create({ data: { productId, assetId: asset.id, url: `/api/media/${asset.id}`, alt: photo.alt, position } });
+        await tx.photo.create({ data: { productId, assetId: asset.id, url: `/api/media/${asset.id}`, alt: photo.alt, position, color: photo.color || null } });
       }
     }
     return tx.product.findUniqueOrThrow({ where: { id: productId }, include });
@@ -111,14 +114,19 @@ export class AdminService {
   }
   create(dto: ProductDto) { return this.transaction(dto); }
   update(id: string, dto: ProductDto) { return this.transaction(dto, id); }
+  async remove(id: string, version: number) {
+    const result = await this.db.product.updateMany({ where: { id, version, deletedAt: null }, data: { deletedAt: new Date(), published: false, version: { increment: 1 } } });
+    if (!result.count) throw new ConflictException('El producto cambio o ya fue eliminado. Recarga el listado.');
+    return { message: 'Producto eliminado del catalogo. Su historial se conserva.' };
+  }
   async publish(id: string, dto: PublicationDto) {
     return this.db.$transaction(async tx => {
       const product = await tx.product.findUnique({ where: { id }, include });
-      if (!product) throw new NotFoundException('Modelo no encontrado.');
+      if (!product || product.deletedAt) throw new NotFoundException('Modelo no encontrado.');
       if (dto.published && (!product.photos.some(p => p.position === 0) || !product.variants.length || !product.description.trim() || !product.material.trim() || product.price.lte(0))) {
         throw new BadRequestException('Completa los datos, las variantes y la fotografía principal antes de publicar.');
       }
-      const updated = await tx.product.updateMany({ where: { id, version: dto.version }, data: { published: dto.published, version: { increment: 1 } } });
+      const updated = await tx.product.updateMany({ where: { id, version: dto.version, deletedAt: null }, data: { published: dto.published, version: { increment: 1 } } });
       if (!updated.count) throw new ConflictException('El modelo cambió. Recarga antes de cambiar su publicación.');
       return tx.product.findUniqueOrThrow({ where: { id }, include });
     });

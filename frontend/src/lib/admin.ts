@@ -1,10 +1,10 @@
 export type AdminUser = { id: string; username: string; email: string; displayName: string };
 export type AdminProduct = {
   id: string; slug: string; name: string; description: string; material: string; price: string;
-  sole: string | null; insole: string | null; lining: string | null;
+  sole: string | null; insole: string | null; lining: string | null; details: string | null;
   categoryId: string; category: { id: string; name: string }; published: boolean; demo: boolean; version: number;
-  variants: { id?: string; size: number; color: string; available: boolean }[];
-  photos: { id?: string; assetId?: string | null; url: string; alt: string; position: number }[];
+  variants: { id?: string; size: number; color: string; available: boolean; availabilityConfirmed?: boolean }[];
+  photos: { id?: string; assetId?: string | null; url: string; alt: string; position: number; color?: string | null }[];
 };
 export type Category = { id: string; name: string };
 export async function adminRequest<T>(path: string, options: RequestInit = {}): Promise<T> {

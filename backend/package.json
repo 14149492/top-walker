@@ -9,7 +9,8 @@
     "lint": "eslint src prisma/seed.ts",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
-    "test:integration": "node --test test/catalog.test.mjs"
+    "test:integration": "node --test test/catalog.test.mjs",
+    "catalog:import": "tsx scripts/import-catalog.ts"
   },
   "dependencies": {
     "@nestjs/common": "11.2.11",

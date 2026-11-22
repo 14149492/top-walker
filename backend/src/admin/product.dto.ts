@@ -7,11 +7,13 @@ export class VariantDto {
   @IsInt() @Min(1) @Max(60) size!: number;
   @Transform(trim) @IsString() @Length(1, 40) color!: string;
   @IsBoolean() available!: boolean;
+  @IsOptional() @IsBoolean() availabilityConfirmed?: boolean;
 }
 export class PhotoDto {
   @IsOptional() @IsString() @Length(1, 100) id?: string;
   @IsOptional() @IsString() @Length(1, 100) assetId?: string;
   @Transform(trim) @IsString() @Length(1, 160) alt!: string;
+  @IsOptional() @Transform(trim) @IsString() @Length(0, 40) color?: string | null;
 }
 export class ProductDto {
   @Transform(trim) @IsString() @Length(2, 120) name!: string;
@@ -20,6 +22,7 @@ export class ProductDto {
   @IsOptional() @Transform(trim) @IsString() @Length(0, 200) sole?: string | null;
   @IsOptional() @Transform(trim) @IsString() @Length(0, 200) insole?: string | null;
   @IsOptional() @Transform(trim) @IsString() @Length(0, 200) lining?: string | null;
+  @IsOptional() @Transform(trim) @IsString() @Length(0, 1000) details?: string | null;
   @IsString() @Length(1, 100) categoryId!: string;
   @IsString() @Matches(/^(?:0|[1-9]\d{0,7})(?:\.\d{1,2})?$/, { message: 'El precio debe ser un decimal positivo con hasta dos decimales.' }) price!: string;
   @IsBoolean() published!: boolean;
@@ -30,6 +33,9 @@ export class ProductDto {
 }
 export class PublicationDto {
   @IsBoolean() published!: boolean;
+  @IsInt() @Min(0) version!: number;
+}
+export class DeleteProductDto {
   @IsInt() @Min(0) version!: number;
 }
 export class CategoryDto {

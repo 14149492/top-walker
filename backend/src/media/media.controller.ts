@@ -1,8 +1,14 @@
-import { Controller, Get, Param, ParseUUIDPipe, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Matches } from 'class-validator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Request, Response } from 'express';
 import { AdminGuard, OriginGuard } from '../auth/auth.guard';
 import { MediaService } from './media.service';
+
+class MediaIdDto {
+  @Matches(/^(?:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}|import-[a-f0-9]{64})$/i)
+  id!: string;
+}
 
 @Controller()
 export class MediaController {
@@ -13,8 +19,8 @@ export class MediaController {
   @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 5 * 1024 * 1024, files: 1 } }))
   upload(@UploadedFile() file?: Express.Multer.File) { return this.media.upload(file); }
   @Get('media/:id')
-  async image(@Param('id', new ParseUUIDPipe()) id: string, @Req() req: Request, @Res() res: Response) {
-    const asset = await this.media.read(id, req.headers.cookie);
+  async image(@Param() params: MediaIdDto, @Req() req: Request, @Res() res: Response) {
+    const asset = await this.media.read(params.id, req.headers.cookie);
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     if (asset.url) return res.redirect(asset.url);

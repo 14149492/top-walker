@@ -4,6 +4,8 @@ Estado: reglas confirmadas por el usuario el 18 de noviembre de 2026, ampliadas 
 
 ## Relaciones
 
+La ampliacion comercial del 22 de noviembre agrega `Product.importKey`, `details`, `deletedAt`, `Variant.availabilityConfirmed`, `Photo.color`, `CatalogEvent` y `EventGate` mediante `202611220001_commercial_catalog`. La politica de importacion, eliminacion logica, estadisticas y retencion se documenta en [catalogo-comercial.md](catalogo-comercial.md).
+
 Ampliacion del 20 de noviembre: `202611200001_product_characteristics` agrega a Product los campos opcionales `sole` (plantas), `insole` (plantilla interna) y `lining` (forro interno). Se validan como texto de hasta 200 caracteres. Omitirlos en una actualizacion conserva su valor; enviar texto vacio o null lo limpia. Los modelos anteriores conservan sus datos y las caracteristicas vacias no se muestran en la ficha. Material, precio y tallas mantienen sus campos y relaciones actuales. Los ejemplos de SHELBY son referencias de contenido, no valores impuestos a todo el catalogo.
 
 El esquema y el diagrama ER de esta pagina fueron elaborados por Codex durante el desarrollo, a partir de los requisitos y las reglas confirmadas por el usuario. Esas confirmaciones corresponden a disponibilidad por talla/color, precio, publicacion, fotografias y retirada reversible. El usuario no proporciono un diagrama de base de datos como diseño previo aprobado; el diagrama siguiente documenta la estructura implementada y permite revisarla.
@@ -13,6 +15,7 @@ erDiagram
     Category ||--o{ Product : clasifica
     Product ||--o{ Variant : ofrece
     Product ||--o{ Photo : muestra
+    Product ||--o{ CatalogEvent : registra
     MediaAsset o|--o{ Photo : respalda
     AdminUser ||--o{ AdminSession : autentica
     Category {
@@ -29,6 +32,9 @@ erDiagram
         String sole "opcional"
         String insole "opcional"
         String lining "opcional"
+        String details "opcional"
+        String importKey UK "opcional"
+        DateTime deletedAt "opcional"
         Decimal price
         Boolean published
         Boolean demo
@@ -42,12 +48,14 @@ erDiagram
         Int size
         String color
         Boolean available
+        Boolean availabilityConfirmed
     }
     Photo {
         String id PK
         String productId FK
         String url
         String alt
+        String color "opcional"
         Int position
         String assetId FK
     }
@@ -72,6 +80,19 @@ erDiagram
         String remoteUrl
     }
     LoginAttempt {
+        String key PK
+        Int count
+        DateTime expiresAt
+    }
+    CatalogEvent {
+        String id PK
+        CatalogEventType type
+        String productId FK
+        Int size "opcional"
+        String color "opcional"
+        DateTime createdAt
+    }
+    EventGate {
         String key PK
         Int count
         DateTime expiresAt

@@ -24,6 +24,10 @@ model Product {
   sole        String?
   insole      String?
   lining      String?
+  details     String?
+  importKey   String?   @unique
+  deletedAt   DateTime?
+  events      CatalogEvent[]
   /// Precio único en Bs para todas las variantes. CHECK price > 0 en la migración SQL.
   price       Decimal   @db.Decimal(10, 2)
   /// Control manual: false = no publicado/retirado; true = publicado.
@@ -52,6 +56,7 @@ model Variant {
   color     String
   /// true = disponible; false = agotado. La combinación ausente no se ofrece.
   available Boolean @default(false)
+  availabilityConfirmed Boolean @default(true)
 
   /// Impide duplicar una misma combinación dentro del modelo.
   @@unique([productId, size, color])
@@ -65,6 +70,7 @@ model Photo {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   url       String
   alt       String
+  color     String?
   /// Orden ascendente desde 0; la posición 0 es la imagen principal.
   /// CHECK position >= 0 en SQL. El backend mantendrá la secuencia al reordenar.
   position  Int
@@ -110,4 +116,31 @@ model MediaAsset {
   remoteUrl  String?
   createdAt  DateTime @default(now())
   photos     Photo[]
+}
+
+enum CatalogEventType {
+  PRODUCT_VIEW
+  SIZE_SELECT
+  COLOR_SELECT
+  WHATSAPP_CLICK
+}
+
+model CatalogEvent {
+  id        String @id
+  type      CatalogEventType
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  size      Int?
+  color     String?
+  createdAt DateTime @default(now())
+  @@index([createdAt, type])
+  @@index([productId, createdAt])
+}
+
+/// Short-lived hashes for deduplication and rate limiting; no raw visitor data.
+model EventGate {
+  key       String @id
+  count     Int @default(1)
+  expiresAt DateTime
+  @@index([expiresAt])
 }

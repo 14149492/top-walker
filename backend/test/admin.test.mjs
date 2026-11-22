@@ -148,7 +148,7 @@ test('HU-06 a HU-10: API administrativa integrada con PostgreSQL', async t => {
       assert.deepEqual(product.variants, original.variants); assert.deepEqual(product.photos, original.photos);
       product = await json('/admin/products/' + product.id + '/publication', { method: 'PATCH', cookie: helper, body: { published: true, version: product.version } });
       assert.equal((await request('/catalog/products/' + product.slug)).status, 200);
-      assert.equal((await request('/admin/products/' + product.id, { method: 'DELETE', cookie: owner })).status, 404);
+      assert.equal((await request('/admin/products/' + product.id, { method: 'DELETE', cookie: owner })).status, 400);
     });
     await t.test('HU-06: cierre revoca la sesión; las sesiones vencidas son rechazadas', async () => {
       const closed = await request('/auth/logout', { method: 'POST', cookie: owner }); assert.equal(closed.status, 200);

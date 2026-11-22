@@ -21,29 +21,27 @@ test('catálogo público coincide con PostgreSQL y omite retirados', async () =>
   } finally { await db.$disconnect(); }
 });
 test('búsqueda sin distinción de mayúsculas, filtros combinados y sin resultados', async () => {
-  const products = await get('/catalog/products?q=OXFORD&category=oxford&size=40');
+  const products = await get('/catalog/products?q=OXFORD NEGRO&category=oxford');
   assert.equal(products.length, 1);
-  assert.equal(products[0].slug, 'oxford-ejecutivo');
+  assert.equal(products[0].slug, 'tw-oxford-negro');
   assert.deepEqual(await get('/catalog/products?q=no-existe'), []);
   assert.deepEqual(await get('/catalog/products?category=oxford&size=38'), []);
 });
-test('talla disponible en otro color cuenta como coincidencia', async () => {
-  const products = await get('/catalog/products?category=urbano&size=38');
-  assert.equal(products.length, 1);
-  const variants = products[0].variants.filter(v => v.size === 38);
-  assert.ok(variants.some(v => v.color === 'Negro' && v.available));
-  assert.ok(variants.some(v => v.color === 'Marrón' && !v.available));
+test('tallas anunciadas sin disponibilidad confirmada no pasan el filtro', async () => {
+  const product = await get('/catalog/products/tw-mustang');
+  assert.ok(product.variants.length > 0);
+  assert.ok(product.variants.every(v => !v.available && !v.availabilityConfirmed));
+  assert.deepEqual(await get('/catalog/products?q=Mustang&size=40'), []);
 });
 
 test('buscar con o sin tildes produce los mismos resultados y conserva filtros', async () => {
   const ids = rows => rows.map(row => row.id);
-  const canonical = await get('/catalog/products?q=' + encodeURIComponent('Botín'));
+  const canonical = await get('/catalog/products?q=Oxford%20Cafe');
   assert.ok(canonical.length > 0);
-  for (const term of ['botin', 'BOTÍN', 'Boti\u0301n']) {
+  for (const term of ['oxford cafe', 'OXFORD CAF\u00c9', 'Oxford Cafe\u0301']) {
     assert.deepEqual(ids(await get('/catalog/products?q=' + encodeURIComponent(term))), ids(canonical));
   }
-  assert.deepEqual(ids(await get('/catalog/products?q=mocasin')), ids(await get('/catalog/products?q=' + encodeURIComponent('mocasín'))));
-  assert.deepEqual(await get('/catalog/products?q=botin&category=oxford'), []);
+  assert.deepEqual(await get('/catalog/products?q=Mustang&category=oxford'), []);
   assert.deepEqual(await get('/catalog/products?q=' + encodeURIComponent("%' OR 1=1 --")), []);
   assert.deepEqual(await get('/catalog/products?q=%25'), []);
   assert.deepEqual(await get('/catalog/products?q=%5F'), []);
@@ -58,11 +56,11 @@ test('rechaza entradas incorrectas y no expone escritura', async () => {
   }
 });
 test('detalle y filtros muestran datos almacenados', async () => {
-  const product = await get('/catalog/products/urbano-casual');
-  assert.equal(product.price, '469');
+  const product = await get('/catalog/products/tw-mustang');
+  assert.equal(product.price, '350');
   assert.equal(product.photos[0].position, 0);
   assert.ok(product.description && product.material && product.variants.length);
   const filters = await get('/catalog/filters');
-  assert.ok(filters.categories.some(c => c.id === 'urbano'));
-  assert.ok(filters.sizes.includes(38));
+  assert.ok(filters.categories.some(c => c.id === 'botines'));
+  assert.ok(Array.isArray(filters.sizes));
 });

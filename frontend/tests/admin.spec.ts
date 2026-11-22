@@ -132,9 +132,9 @@ test('HU-07 a HU-10: registro, fotografías, edición, variantes y publicación'
     await page.getByLabel('Precio en Bs').fill('499.90');
     await page.getByLabel('Categoria', { exact: true }).selectOption('oxford');
     const black40 = await variantRow(page, 'Negro', 40);
-    await black40.getByRole('checkbox').uncheck();
+    await black40.getByRole('checkbox', { name: /^Disponible/ }).uncheck();
     const black41 = await variantRow(page, 'Negro', 41);
-    await black41.getByRole('checkbox').check();
+    await black41.getByRole('checkbox', { name: /^Disponible/ }).check();
     await black41.locator('input[type="number"]').fill('42');
     await black41.locator('input:not([type])').fill('Azul');
     await page.getByRole('button', { name: 'Añadir combinacion' }).click();

@@ -56,6 +56,10 @@ test('HU-06 a HU-10: API administrativa integrada con PostgreSQL', async t => {
       const a = await json('/auth/me', { cookie: owner }), b = await json('/auth/me', { cookie: helper });
       assert.notEqual(a.id, b.id);
       assert.equal((await request('/admin/products', { cookie: helper })).status, 200);
+      const accentIds = async term => (await json('/admin/products?q=' + encodeURIComponent(term), { cookie: helper })).map(p => p.id);
+      assert.deepEqual(await accentIds('botin'), await accentIds('BOTÍN'));
+      assert.ok((await accentIds('botin')).length > 0);
+      assert.ok((await accentIds('demostracion')).includes('demo-retirado'));
       const stored = await db.adminUser.findUniqueOrThrow({ where: { id: a.id } });
       assert.match(stored.passwordHash, /^scrypt\$131072\$8\$1\$/);
       assert.notEqual(stored.passwordHash, credentials[0].password);
@@ -86,6 +90,7 @@ test('HU-06 a HU-10: API administrativa integrada con PostgreSQL', async t => {
       const body = {
         name: `QA API ${randomUUID()}`, description: 'Calzado demostrativo creado por la prueba administrativa.', material: 'Cuero de demostración',
         price: '450.50', categoryId: category.id, published: true, demo: true,
+        sole: 'Super ligeras antideslizantes', insole: 'Piel de res y acolchado', lining: 'Piel de res badana',
         variants: [{ size: 40, color: 'Negro', available: true }, { size: 41, color: 'Negro', available: false }, { size: 40, color: 'Marrón', available: true }],
         photos: [{ assetId: asset.id, alt: 'Imagen demostrativa principal' }, { assetId: secondAsset.id, alt: 'Imagen demostrativa secundaria' }],
       };
@@ -93,6 +98,13 @@ test('HU-06 a HU-10: API administrativa integrada con PostgreSQL', async t => {
         assert.equal((await request('/admin/products', { method: 'POST', cookie: owner, body: { ...body, ...changes } })).status, 400);
       }
       product = await json('/admin/products', { method: 'POST', cookie: owner, body }, 201); created.push(product.id);
+      for (const key of ['sole', 'insole', 'lining']) {
+        assert.equal((await db.product.findUniqueOrThrow({ where: { id: product.id } }))[key], body[key]);
+        assert.equal((await json('/catalog/products/' + product.slug))[key], body[key]);
+        for (const value of [42, 'x'.repeat(201)]) {
+          assert.equal((await request('/admin/products', { method: 'POST', cookie: owner, body: { ...body, [key]: value } })).status, 400);
+        }
+      }
       assert.equal((await db.product.findUniqueOrThrow({ where: { id: product.id } })).price.toString(), '450.5');
       const visible = await json('/catalog/products/' + product.slug);
       assert.equal(visible.id, product.id); assert.equal(visible.variants.length, 3); assert.equal(visible.photos[0].position, 0);
@@ -110,6 +122,7 @@ test('HU-06 a HU-10: API administrativa integrada con PostgreSQL', async t => {
       body.variants.push({ size: 43, color: 'Marrón', available: true }); body.photos.reverse();
       product = await json('/admin/products/' + product.id, { method: 'PUT', cookie: helper, body });
       assert.equal(product.id, original.id); assert.equal(product.slug, original.slug);
+      for (const key of ['sole', 'insole', 'lining']) assert.equal(product[key], original[key], 'Omitted characteristics must be preserved');
       assert.equal(product.photos[0].id, original.photos[1].id); assert.equal(product.photos[0].position, 0);
       assert.ok(original.variants.every(v => product.variants.some(next => next.id === v.id)));
       assert.equal((await request('/admin/products/' + product.id, { method: 'PUT', cookie: owner, body: payload(original) })).status, 409);
@@ -118,7 +131,11 @@ test('HU-06 a HU-10: API administrativa integrada con PostgreSQL', async t => {
       assert.ok(visible.variants.some(v => v.size === 42 && v.color === 'Azul' && v.available));
       assert.ok((await json('/catalog/products?q=' + encodeURIComponent(product.name) + '&size=42')).some(p => p.id === product.id));
       const allUnavailable = payload(product); allUnavailable.variants.forEach(v => { v.available = false; });
+      allUnavailable.sole = 'Plantas actualizadas'; allUnavailable.insole = ''; allUnavailable.lining = null;
       product = await json('/admin/products/' + product.id, { method: 'PUT', cookie: helper, body: allUnavailable });
+      const characteristics = await json('/catalog/products/' + product.slug);
+      assert.equal(characteristics.sole, 'Plantas actualizadas'); assert.equal(characteristics.insole, null); assert.equal(characteristics.lining, null);
+      assert.equal((await db.product.findUniqueOrThrow({ where: { id: product.id } })).insole, null);
       assert.deepEqual(await json('/catalog/products?q=' + encodeURIComponent(product.name) + '&size=42'), []);
       assert.ok((await json('/catalog/products/' + product.slug)).variants.every(v => !v.available));
     });

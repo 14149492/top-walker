@@ -15,12 +15,12 @@ export function AdminNav() {
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.assign('/admin/login');
     }
-    catch { setError('No se pudo cerrar la sesión. Inténtalo de nuevo.'); setPending(false); }
+    catch { setError('No se pudo cerrar la sesion. Intentalo de nuevo.'); setPending(false); }
   }
-  return <><nav className="admin-nav" aria-label="Administración">
+  return <><nav className="admin-nav" aria-label="Administracion">
     <Link href="/admin" aria-current={pathname === '/admin' ? 'page' : undefined}>Panel</Link>
     <Link href="/admin/productos" aria-current={pathname.startsWith('/admin/productos') ? 'page' : undefined}>Productos</Link>
-    <Link href="/catalogo">Ver catálogo</Link>
-    <button type="button" onClick={logout} disabled={!ready || pending}>{pending ? 'Cerrando…' : 'Cerrar sesión'}</button>
+    <Link href="/catalogo">Ver catalogo</Link>
+    <button type="button" onClick={logout} disabled={!ready || pending}>{pending ? 'Cerrando…' : 'Cerrar sesion'}</button>
   </nav>{error && <p className="form-error" role="alert">{error}</p>}</>;
 }

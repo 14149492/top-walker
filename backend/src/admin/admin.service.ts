@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../database/prisma.service';
 import { ProductDto, PublicationDto } from './product.dto';
+import { productNameFilter } from '../database/product-search';
 
 const include = { category: true, variants: { orderBy: [{ size: 'asc' as const }, { color: 'asc' as const }] }, photos: { orderBy: { position: 'asc' as const } } };
 const normalized = (value: string) => value.trim().replace(/\s+/g, ' ').toLocaleLowerCase('es');
@@ -11,8 +12,8 @@ type Transaction = Prisma.TransactionClient;
 @Injectable()
 export class AdminService {
   constructor(private readonly db: PrismaService) {}
-  list(q?: string) {
-    return this.db.product.findMany({ where: q ? { name: { contains: q, mode: 'insensitive' } } : {}, include, orderBy: [{ updatedAt: 'desc' }, { id: 'asc' }] });
+  async list(q?: string) {
+    return this.db.product.findMany({ where: await productNameFilter(this.db, q), include, orderBy: [{ updatedAt: 'desc' }, { id: 'asc' }] });
   }
   async detail(id: string) {
     const product = await this.db.product.findUnique({ where: { id }, include });
@@ -49,7 +50,13 @@ export class AdminService {
     const existing = id ? await tx.product.findUnique({ where: { id }, include }) : null;
     if (id && !existing) throw new NotFoundException('Modelo no encontrado.');
     if (existing && dto.version === undefined) throw new BadRequestException('Falta la versión del modelo. Vuelve a abrir el formulario.');
-    const data = { name: dto.name, description: dto.description, material: dto.material, categoryId: dto.categoryId, price: dto.price, published: dto.published, demo: dto.demo };
+    const data = {
+      name: dto.name, description: dto.description, material: dto.material, categoryId: dto.categoryId, price: dto.price, published: dto.published, demo: dto.demo,
+      // Missing fields preserve existing values; empty strings explicitly clear them.
+      sole: dto.sole === undefined ? undefined : dto.sole || null,
+      insole: dto.insole === undefined ? undefined : dto.insole || null,
+      lining: dto.lining === undefined ? undefined : dto.lining || null,
+    };
     let productId: string;
     if (existing) {
       const updated = await tx.product.updateMany({ where: { id: existing.id, version: dto.version }, data: { ...data, version: { increment: 1 } } });

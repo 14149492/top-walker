@@ -1,0 +1,54 @@
+/* Monochrome presentation based on the reference supplied by Top Walker. */
+:root { --bg:#0b0b0b; --panel:#141414; --text:#f5f5f5; --muted:#aaa; --accent:#f1f1f1; --line:#2b2b2b; }
+h1,h2,h3,.brand,.price,.footer-brand,.detail-price,.form-section legend { font-family:Arial,Helvetica,sans-serif; }
+em,.detail-info h1 { font-style:normal; }
+.brand-wordmark { font-family:Arial,Helvetica,sans-serif; font-size:26px; text-transform:uppercase; color:var(--text); }
+.brand-wordmark small { color:var(--muted); }
+.site-header { background:#090909; }
+.site-header nav a[aria-current=page] { border-color:#f5f5f5; }
+.hero { background:#141414; }
+.hero-art { background-image:linear-gradient(90deg,#141414 0%,#141414 30%,#14141435 58%,#14141400 100%),url('/demo/home-reference.png'); }
+.hero-description,.hero-caption,.catalog-hero p:not(.eyebrow) { color:#bdbdbd; }
+.hero-caption { background:#111c; }
+.catalog-hero { background:#141414; }
+.catalog-hero .hero-art { background-image:linear-gradient(105deg,#141414 0 73%,#202020 73%); background-size:cover; background-position:center; opacity:1; }
+.button { background:#f4f4f4; border-color:#f4f4f4; color:#080808; }
+.button:hover { background:#dedede; border-color:#dedede; color:#080808; }
+.button.secondary { background:#151515; border-color:#3b3b3b; color:#f5f5f5; }
+.button.secondary:hover { background:#252525; border-color:#888; }
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline-color:#eee; }
+.text-link:hover { color:#fff; }
+.product-card,.values,.filters { background:#141414; }
+.product-photo,.gallery { background-color:#202020; }
+.values>div+div,.filter-heading { border-color:var(--line); }
+.demo-notice { color:#bbb; border-color:#777; background:#191919; }
+.demo-tag { color:#eee; background:#111e; border-color:#666; }
+.size-summary span { color:#ddd; }
+.availability,.status-badge.is-published { color:#eee; background:#303030; }
+.unavailable,.status-badge { color:#bbb; background:#252525; }
+.filter-field input,.filter-field select { background-color:#111; border-color:#444; }
+.filter-field select,.admin-form select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23cccccc'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E"); }
+.option { background:#171717; border-color:#555; }
+.option[aria-pressed=true] { background:#eee; border-color:#eee; color:#111; }
+.selection-status { color:#ddd; }
+.contact-pending,.storage-note { background:#1d1d1d; border-color:#555; color:#bbb; }
+.footer { background:#101010; }
+.login-card { background:linear-gradient(140deg,#202020,#141414); }
+.admin-info,.admin-search,.admin-product,.form-section { background:#141414; }
+.admin-form label { color:#eee; }
+.admin-form input:not([type=checkbox]),.admin-form select,.admin-form textarea,.admin-search input { background-color:#101010; border-color:#444; color:#f5f5f5; }
+.admin-form input[type=checkbox] { accent-color:#ddd; }
+.admin-nav button { border-color:#444; }
+.upload-label { background:#171717; border-color:#666; }
+.upload-label input::file-selector-button { background:#333; border-color:#666; }
+.photo-editor-card { background:#101010; }
+.photo-editor-preview { background:#202020; }
+.product-characteristics { margin:24px 0; padding:20px 0; border-block:1px solid var(--line); }
+.product-characteristics h2 { font-size:18px; margin:0 0 14px; }
+.product-characteristics dl { margin:0; display:grid; gap:12px; }
+.product-characteristics dl>div { display:grid; grid-template-columns:minmax(0,140px) minmax(0,1fr); gap:12px; line-height:1.6; }
+.product-characteristics dt { font-weight:600; }
+.product-characteristics dd { margin:0; color:var(--muted); overflow-wrap:anywhere; }
+.description { white-space:pre-line; }
+@media(max-width:800px) { .hero-art { background-image:linear-gradient(90deg,#141414f5,#14141475),url('/demo/home-reference.png'); } }
+@media(max-width:550px) { .hero-art { background-image:linear-gradient(90deg,#141414f2,#141414bb),url('/demo/home-reference.png'); } }

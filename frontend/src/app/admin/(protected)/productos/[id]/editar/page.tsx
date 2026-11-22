@@ -10,5 +10,5 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
   if (!response.ok) throw new Error('No se pudo cargar el producto.');
   const product: AdminProduct = await response.json();
   const [categories, media] = await Promise.all([adminData<Category[]>('admin/categories'), adminData<{ provider: string }>('admin/media/config')]);
-  return <section><div className="admin-title"><div><p className="eyebrow">MANTÉN TU CATÁLOGO AL DÍA</p><h1>Editar producto</h1><p className="muted">{product.name}</p></div></div><ProductForm product={product} categories={categories} provider={media.provider} /></section>;
+  return <section><div className="admin-title"><div><p className="eyebrow">MANTEN TU CATALOGO AL DIA</p><h1>Editar producto</h1><p className="muted">{product.name}</p></div></div><ProductForm product={product} categories={categories} provider={media.provider} /></section>;
 }

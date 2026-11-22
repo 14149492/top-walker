@@ -4,6 +4,10 @@ Estado: reglas confirmadas por el usuario el 18 de noviembre de 2026, ampliadas 
 
 ## Relaciones
 
+Ampliacion del 20 de noviembre: `202611200001_product_characteristics` agrega a Product los campos opcionales `sole` (plantas), `insole` (plantilla interna) y `lining` (forro interno). Se validan como texto de hasta 200 caracteres. Omitirlos en una actualizacion conserva su valor; enviar texto vacio o null lo limpia. Los modelos anteriores conservan sus datos y las caracteristicas vacias no se muestran en la ficha. Material, precio y tallas mantienen sus campos y relaciones actuales. Los ejemplos de SHELBY son referencias de contenido, no valores impuestos a todo el catalogo.
+
+El esquema y el diagrama ER de esta pagina fueron elaborados por Codex durante el desarrollo, a partir de los requisitos y las reglas confirmadas por el usuario. Esas confirmaciones corresponden a disponibilidad por talla/color, precio, publicacion, fotografias y retirada reversible. El usuario no proporciono un diagrama de base de datos como diseño previo aprobado; el diagrama siguiente documenta la estructura implementada y permite revisarla.
+
 ```mermaid
 erDiagram
     Category ||--o{ Product : clasifica
@@ -22,6 +26,9 @@ erDiagram
         String name
         String description
         String material
+        String sole "opcional"
+        String insole "opcional"
+        String lining "opcional"
         Decimal price
         Boolean published
         Boolean demo
@@ -64,9 +71,24 @@ erDiagram
         String storageKey UK
         String remoteUrl
     }
+    LoginAttempt {
+        String key PK
+        Int count
+        DateTime expiresAt
+    }
 ```
 
 El backend administrativo valida los campos obligatorios de RF-07, al menos una variante y una galería con imagen principal tanto al registrar como al editar. Puede guardarse completo pero retirado, sin hacerlo visible. La migración administrativa es aditiva: mantiene productos, variantes, fotos e IDs anteriores.
+
+## Como se creo la base de datos
+
+1. En el primer arranque con el volumen vacio, el contenedor PostgreSQL inicializo la base indicada por `POSTGRES_DB` (`topwalker` en el entorno local). Las variables privadas proceden de `.env`.
+2. `backend/prisma/schema.prisma` describe los modelos, campos y relaciones usados por Prisma.
+3. Las migraciones SQL versionadas crean las tablas y restricciones: `202611180001_initial_catalog` para el catalogo y `202611190001_administration` para la administracion.
+4. El inicio del backend ejecuta `prisma migrate deploy` para aplicar migraciones pendientes. `prisma generate` genera el cliente de acceso a datos; no crea las tablas.
+5. La semilla se ejecuta explicitamente para insertar demostraciones ausentes. Reiniciar los contenedores conserva la base y los registros en el volumen persistente.
+
+Una modificacion futura del diseño debe reflejarse en una nueva migracion revisada. Se conservan las migraciones aplicadas y los datos existentes.
 
 ## Reglas confirmadas y representación
 

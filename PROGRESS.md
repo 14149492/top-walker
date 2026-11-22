@@ -1,15 +1,31 @@
 # Top Walker — progreso
 
+## 2026-11-22 · Punto de respaldo previo a la nueva etapa
+
+- A peticion del usuario, se prepara un commit con los avances existentes: tema oscuro, busqueda sin tildes, correccion de filtros, caracteristicas del calzado y documentacion. Incluye las 25 fotografias originales JPG de `zapatos1`, sin procesar, como entrada para la siguiente etapa.
+- Este punto no implementa todavia el nuevo catalogo real, rediseño, eliminacion logica ni estadisticas solicitados en el documento adjunto. Las verificaciones funcionales anteriores conservan sus resultados y pendientes; no se repiten suites para crear el commit.
+- Se excluyen credenciales, `.env`, `.work`, dependencias y resultados de pruebas. El commit conserva archivos del proyecto, no una copia de PostgreSQL ni de los volumenes Docker. Se revisan formato y presencia de secretos antes de confirmar; sin push en esta operacion.
+
 ## Estado actual · 2026-11-20
 
 - **Sprint 1 completado: HU-06 y HU-07 (8 puntos). Sprint 2 completado: HU-08, HU-09 y HU-10 (9 puntos).** Verificados desde el navegador hasta PostgreSQL.
 - Panel: http://localhost:3000/admin/login. Dos cuentas locales independientes con iguales permisos; acceso privado en `.work/accesos-locales.json`. Inicialización/restablecimiento documentados en README y `scripts/Initialize-Admins.ps1`.
 - Tres contenedores construidos, iniciados y saludables. Persistencia comprobada tras reiniciar los tres servicios, sin eliminar volúmenes ni recursos ajenos.
-- **19/19 pruebas backend y 12/12 pruebas de navegador aprobadas**; lint, tipos, compilación backend y compilación de producción Next.js aprobados.
+- Cierre de los sprints: **19/19 pruebas backend y 12/12 de navegador aprobadas**. Cambios posteriores de paleta/busqueda: **20/20 backend y 9/12 de navegador aprobadas**; tres pruebas de catalogo corregidas pendientes de repeticion. Lint, tipos y compilaciones aprobados. Los resultados de cada etapa se detallan por separado.
 - Logotipo real reutilizado en encabezado, login y panel; favicon derivado y tema oscuro coherente. Original y copia tienen SHA-256 idéntico.
-- Pendiente externo: credenciales para verificar Cloudinary contra el servicio real; el flujo de carga local persistente está operativo. WhatsApp comercial, fotografías definitivas, RNF de carga y despliegue continúan fuera de estos sprints.
+- Cloudinary queda pospuesto por decision del usuario; se mantiene el almacenamiento local persistente. WhatsApp comercial, fotografias definitivas, RNF de carga y despliegue continuan fuera de estos sprints.
+- Entrega de los sprints subida a GitHub en el commit `2d15829`. Los ajustes posteriores de colores, busqueda y documentacion permanecen locales; no se presentan como una nueva entrega verificada.
 
 Las secciones siguientes conservan el historial de etapas; el cierre administrativo y sus evidencias están al final.
+
+## 2026-11-20 · Paleta monocroma y busqueda sin tildes
+
+- Nueva referencia del usuario: fondos negros/grises, bordes discretos y botones blancos. Esta indicacion actualiza la preferencia anterior por acentos de bronce. Se mantiene el logotipo proporcionado.
+- `frontend/src/app/theme.css`: paleta y tipografia coherentes en catalogo, inicio, ficha, acceso y panel. Textos fijos del frontend sin tildes; se conserva la ñ. No se modifican nombres ni otros datos guardados.
+- `backend/src/database/product-search.ts`: filtro compartido para catalogo y listado administrativo. Normalizacion NFC, equivalencia de caracteres españoles con/sin acento y coincidencia literal parametrizada. Se mantienen filtros de publicacion, categoria y talla.
+- Pruebas añadidas para botin/BOTÍN/Unicode descompuesto, mocasin, combinacion de filtros, retirada y caracteres literales de SQL. Backend: **20/20 aprobadas**; lint y tipos aprobados. Imagen backend construida y compilacion de produccion Next.js aprobada; los tres contenedores saludables.
+- Navegador: **9/12 aprobadas** en la primera pasada (administracion completa y proxy/retirados en tres anchos). Las tres pruebas restantes se detuvieron porque esperaban ocho productos; el catalogo ya contiene nueve, incluido el modelo real `casual 1` agregado por el usuario. Se adapto la prueba para contrastar el recuento real de la API, conservando ese producto.
+- La repeticion de esas tres pruebas quedo pendiente: se rechazo el permiso de la herramienta para abrir el navegador. No se afirma que esa repeticion haya pasado. Los cambios de esta etapa permanecen locales, pendientes de cerrar esa comprobacion antes de una nueva entrega a GitHub.
 
 ## 2026-11-18 · Etapa 1 ejecutada
 
@@ -78,9 +94,10 @@ Las secciones siguientes conservan el historial de etapas; el cierre administrat
 - Repositorio Git inicializado en `main`, con remoto `origin` en https://github.com/14149492/top-walker.git. La subida del código se registra en la sección de entrega; no se realizó despliegue externo de la aplicación.
 - No se conocen errores funcionales pendientes en los recorridos públicos probados. El entorno entregado es de desarrollo local.
 
-## 2026-11-18 · Diseño de datos confirmado
+## 2026-11-18 · Reglas confirmadas y diseño de datos propuesto
 
 - Revisados AGENTS.md actualizado, requisitos y criterios del DOCX, esquema, migración y consultas existentes.
+- El usuario confirmo las reglas de negocio. La estructura de tablas y el diagrama ER fueron propuestos durante el desarrollo por Codex a partir de esas reglas y la documentacion; no se recibio un diagrama de base de datos como diseño previo aprobado.
 - Las seis reglas confirmadas son compatibles con las cuatro entidades actuales: Category, Product, Variant y Photo. No se requieren cambios estructurales ni una nueva migración.
 - `backend/prisma/schema.prisma`: comentarios de dominio sobre precio único, booleanos de publicación/disponibilidad, clave talla/color y posición de foto principal.
 - `documento del proyecto/modelo-datos.md`: diagrama ER, correspondencia con RF/HU-01/02/04/07–10, restricciones de SQL y responsabilidades pendientes del backend administrativo. README enlaza el diseño.
@@ -119,6 +136,18 @@ Las secciones siguientes conservan el historial de etapas; el cierre administrat
 
 ## 2026-11-20 · Cierre de Sprint 1 y Sprint 2
 
+Planificacion solicitada por el usuario:
+
+| Historia | Sprint | Puntos | Prioridad | Riesgo |
+| --- | --- | --- | --- | --- |
+| HU-06 | 1 | 3 | Alta | Medio |
+| HU-07 | 1 | 5 | Alta | Medio |
+| HU-08 | 2 | 3 | Alta | Medio |
+| HU-09 | 2 | 3 | Media | Bajo |
+| HU-10 | 2 | 3 | Alta | Medio |
+
+Sprint 1: **8 puntos**. Sprint 2: **9 puntos**. Las evidencias siguientes corresponden al cierre original de esos sprints; la revision posterior de colores/busqueda tiene su propio estado al inicio del documento.
+
 | Historia | Resultado verificado |
 | --- | --- |
 | HU-06 | Acceso por correo/usuario, error de credenciales, protección de todas las rutas solicitadas, cookie HttpOnly/SameSite, sesiones vencidas y cierre con revocación. Ambas cuentas acceden con los mismos permisos. |
@@ -147,3 +176,34 @@ Las secciones siguientes conservan el historial de etapas; el cierre administrat
 - Documentación: README, este progreso y `documento del proyecto/modelo-datos.md`. Repositorio de entrega: https://github.com/14149492/top-walker.git, rama `main`.
 - `.env`, accesos locales, dependencias y evidencias privadas quedan excluidos de Git. No se publican contraseñas ni sesiones.
 - No se conocen errores pendientes en los recorridos probados. Cloudinary requiere credenciales reales para una comprobación externa; el almacenamiento local de pruebas y sus archivos persistentes ya fueron verificados. Este entorno sigue siendo de desarrollo local.
+
+## 2026-11-20 · Revision de documentacion
+
+- Revisados seguimiento, manual de ejecucion y modelo de datos. Se aclara el estado actual frente a los resultados historicos y se agrega la tabla de puntos, prioridades y riesgos definida por el usuario.
+- README ampliado con la aplicacion concreta de cliente-servidor y tres capas, sus carpetas y flujo de solicitudes.
+- Modelo de datos ampliado con el origen del diseño, la inicializacion de PostgreSQL, la funcion de las migraciones y la entidad LoginAttempt en el diagrama ER.
+- Esta revision modifica documentacion; no cambia datos, contenedores o funcionalidades ni repite las pruebas de navegador cuyo permiso fue rechazado.
+
+## 2026-11-20 · Correccion visual de filtros
+
+- Corregido `frontend/src/app/theme.css`: usar `background-color` conserva la posicion y `no-repeat` de la flecha de los selectores. El shorthand `background` los reiniciaba y producia el mosaico mostrado por el usuario.
+- Verificacion puntual con Edge/Playwright sobre el catalogo local en 360, 768 y 1920 px: ambos selectores tienen `background-repeat: no-repeat` y flecha alineada a la derecha; seis comprobaciones aprobadas. Capturas en `frontend/test-results/filters-*.png`; captura movil revisada visualmente.
+- Cambio limitado a CSS, sin modificaciones de datos. Esta comprobacion visual no sustituye las pruebas funcionales pendientes registradas anteriormente.
+
+## 2026-11-20 · Presentacion comercial y caracteristicas del calzado
+
+- Informacion del negocio proporcionada por el usuario integrada en inicio, Nosotros, pie de pagina, metadatos y acceso administrativo: emprendimiento boliviano de produccion y comercializacion de calzados en 100% cuero con diseños en tendencia. Se conserva el tema oscuro y los textos nuevos sin tildes.
+- HU-07/HU-08: campos opcionales por modelo para plantas (`sole`), plantilla interna (`insole`) y forro interno (`lining`), editables desde el panel y visibles en la ficha publica cuando tienen contenido. Hasta 200 caracteres, validacion NestJS y persistencia Prisma. Material, precio unico y tallas por color conservan su estructura.
+- La imagen de SHELBY se utiliza como referencia para los ejemplos del formulario. No se ha creado una oferta real ni aplicado su precio, rango de tallas o caracteristicas a otros modelos. Las tallas mostradas proceden de las variantes reales; no se inventan tallas intermedias.
+- Migracion aditiva `202611200001_product_characteristics` aplicada: tres columnas opcionales, sin borrar o reemplazar datos. Campos omitidos en API conservan su valor; texto vacio/null permite limpiarlos. Prisma informa tres migraciones al dia.
+- Archivos: schema/migracion Prisma, DTO y servicios admin/catalogo; tipos frontend, formulario, componente `product-characteristics.tsx`, ficha, tema, marca, inicio y login. README y modelo de datos actualizados.
+- Docker reconstruido y los tres servicios saludables. Backend: **20/20 pruebas aprobadas**, ampliadas para validar tipos/longitudes, lectura publica, persistencia, actualizacion, limpieza y compatibilidad al omitir campos. Lint y tipos de ambos servicios aprobados; compilaciones NestJS y Next.js aprobadas. Inicio servido por HTTP comprobado con la nueva descripcion.
+- Fotografias: se mantiene almacenamiento local; Cloudinary pospuesto por decision del usuario.
+- Navegador: **3/3 recorridos HU-07 a HU-10 aprobados** en 360, 768 y 1920 px (3.3 minutos). Verificado registro de las tres caracteristicas, lectura publica, precarga al editar, cambio de plantas y retirada del forro al vaciarlo; sin desbordamiento horizontal. Se usan modelos QA marcados como demostrativos y retirados al finalizar. No se repitieron en esta etapa las pruebas de catalogo pendientes de la etapa anterior.
+- Cambios de esta etapa disponibles en el entorno local; no se ha realizado un nuevo push a GitHub.
+
+## 2026-11-20 · Contenido provisional del catalogo
+
+- A peticion del usuario, completados los tres campos vacios de los ocho modelos publicados (todos de demostracion): plantas `Super ligeras antideslizantes`, plantilla interna `Piel de res y acolchado` y forro interno `Piel de res badana`. Son datos provisionales editables, basados en el ejemplo compartido.
+- Actualizacion mediante API administrativa autenticada, respetando versiones y conservando nombres, descripciones, materiales, precios, publicacion, categorias, fotos y variantes. Los modelos retirados quedan intactos. Copia previa de los productos y script puntual guardados en `.work/`, fuera de Git; no se mostraron credenciales y la sesion se cerro al terminar.
+- Comprobadas las respuestas publicas de los ocho modelos y las tres caracteristicas en el HTML de la ficha Oxford Ejecutivo. Solo se modificaron datos locales y este seguimiento; no se repitieron suites de pruebas ni se cambio la semilla.

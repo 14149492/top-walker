@@ -2,6 +2,31 @@
 
 Catálogo público y administración de calzados. Entorno local de desarrollo con Next.js (App Router), NestJS y PostgreSQL, conectado mediante Prisma.
 
+## Informacion comercial y caracteristicas
+
+La presentacion comercial de Top Walker describe un emprendimiento boliviano de calzados en 100% cuero con diseños en tendencia. En el panel, al registrar o editar un modelo, la seccion **Caracteristicas del calzado** permite especificar plantas, plantilla interna y forro interno. Son campos opcionales por modelo; solo los completados aparecen en la ficha publica. Las tallas se administran por combinacion con color, no como un rango de texto. La migracion `202611200001_product_characteristics` agrega estos datos sin reemplazar los productos existentes.
+
+## Arquitectura cliente-servidor y tres capas
+
+El cliente es el navegador del visitante o administrador. Next.js sirve las paginas, ejecuta parte de la presentacion en el servidor y envia al navegador los componentes interactivos. NestJS expone la API REST que procesa las operaciones del sistema.
+
+| Capa | Responsabilidad | Implementacion |
+| --- | --- | --- |
+| Presentacion | Catalogo, panel, formularios y navegacion | Next.js: `frontend/src/app/` y `frontend/src/components/` |
+| Logica de negocio | Sesiones, permisos, validacion, productos, publicacion y disponibilidad | NestJS: `backend/src/auth/`, `catalog/`, `admin/` y `media/` |
+| Acceso a datos y persistencia | Consultas, transacciones, relaciones y almacenamiento | Prisma en `backend/src/database/` y `backend/prisma/`; PostgreSQL en `topwalker-db` |
+
+```mermaid
+flowchart LR
+    A["Navegador: cliente"] -->|HTTP| B["Next.js: presentacion"]
+    B -->|API REST| C["NestJS: logica de negocio"]
+    C -->|Prisma| D["PostgreSQL: persistencia"]
+```
+
+Prisma se ejecuta dentro del backend. Solo el backend tiene la conexion a PostgreSQL. NestJS es un monolito modular: autenticacion, catalogo, administracion e imagenes son modulos de una misma API.
+
+Ejemplo: al guardar un producto, el formulario envia los datos a `/api/admin/products`; Next.js reenvia la solicitud a NestJS, que valida sesion, origen y campos. El servicio guarda producto, variantes y fotos en una transaccion Prisma. El catalogo consulta la API para mostrar los cambios. Las solicitudes de busqueda pasan por el mismo recorrido y normalizan las tildes en la capa de acceso a datos.
+
 ## Inicio
 
 Requisitos: Docker Desktop iniciado en modo contenedores Linux y Docker Compose.
@@ -83,7 +108,9 @@ Se aceptan JPG, PNG y WebP de hasta 5 MB y 20 megapíxeles; el backend comprueba
 
 ### Identidad visual
 
-El original `imagenes de referencia/identidad-top-walker.png.png` se conserva intacto. La copia de frontend está en `frontend/public/brand/top-walker-logo.png`; `src/lib/brand.ts` centraliza ruta y dimensiones, y `BrandLogo` se reutiliza en encabezado público, acceso y panel. El fondo blanco contenido proporciona contraste, manteniendo proporciones sobre la interfaz de carbón y bronce discreto.
+El original `imagenes de referencia/identidad-top-walker.png.png` se conserva intacto. La copia de frontend esta en `frontend/public/brand/top-walker-logo.png`; `src/lib/brand.ts` centraliza ruta y dimensiones, y `BrandLogo` se reutiliza en encabezado publico, acceso y panel. La referencia del 20 de noviembre define la paleta actual: negro, gris y blanco, botones claros y tarjetas oscuras. `src/app/theme.css` centraliza esta presentacion. Los textos fijos de interfaz se muestran sin tildes, conservando la letra ñ.
+
+El buscador publico y administrativo encuentra nombres con o sin tildes y sin distinguir mayusculas. La consulta normaliza Unicode y caracteres españoles en PostgreSQL con parametros enlazados; `%`, `_` y comillas se buscan como texto literal. Se conservan los nombres originales en la base de datos y los filtros de disponibilidad/publicacion. No requiere extensiones ni migraciones nuevas.
 
 El favicon se deriva del mismo logotipo, sin redibujarlo. Para regenerarlo tras sustituir la copia por una imagen oficial de mayor calidad: `cd frontend` y `node scripts/prepare-brand.mjs`. Actualizar también las dimensiones en `src/lib/brand.ts` si cambia la proporción.
 
@@ -153,7 +180,7 @@ Las pruebas y resultados efectivos se registran en `PROGRESS.md`. El objetivo RN
 
 ## Decisiones y alcance
 
-Diseño y reglas confirmadas: [modelo de datos](documento%20del%20proyecto/modelo-datos.md). Incluye relaciones, restricciones, galería principal y responsabilidades de la futura escritura administrativa. Pruebas de invariantes en PostgreSQL: `docker compose exec backend node --test test/model.test.mjs`.
+Reglas confirmadas y diseño tecnico propuesto a partir de ellas: [modelo de datos](documento%20del%20proyecto/modelo-datos.md). Incluye origen del esquema, creacion de la base, relaciones, restricciones, galeria principal y escritura administrativa implementada. Pruebas de invariantes en PostgreSQL: `docker compose exec backend node --test test/model.test.mjs`.
 
 - Disponibilidad booleana por **talla y color**, solicitada por el usuario; sin cantidades ni descuentos automáticos.
 - Precio único por modelo en bolivianos, mayor que cero.

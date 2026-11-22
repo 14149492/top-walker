@@ -17,6 +17,9 @@ export class ProductDto {
   @Transform(trim) @IsString() @Length(2, 120) name!: string;
   @Transform(({ value }) => typeof value === 'string' ? value.trim() : value) @IsString() @Length(10, 3000) description!: string;
   @Transform(trim) @IsString() @Length(2, 120) material!: string;
+  @IsOptional() @Transform(trim) @IsString() @Length(0, 200) sole?: string | null;
+  @IsOptional() @Transform(trim) @IsString() @Length(0, 200) insole?: string | null;
+  @IsOptional() @Transform(trim) @IsString() @Length(0, 200) lining?: string | null;
   @IsString() @Length(1, 100) categoryId!: string;
   @IsString() @Matches(/^(?:0|[1-9]\d{0,7})(?:\.\d{1,2})?$/, { message: 'El precio debe ser un decimal positivo con hasta dos decimales.' }) price!: string;
   @IsBoolean() published!: boolean;

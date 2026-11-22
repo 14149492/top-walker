@@ -21,6 +21,9 @@ model Product {
   name        String
   description String
   material    String
+  sole        String?
+  insole      String?
+  lining      String?
   /// Precio único en Bs para todas las variantes. CHECK price > 0 en la migración SQL.
   price       Decimal   @db.Decimal(10, 2)
   /// Control manual: false = no publicado/retirado; true = publicado.

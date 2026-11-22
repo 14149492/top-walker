@@ -34,6 +34,21 @@ test('talla disponible en otro color cuenta como coincidencia', async () => {
   assert.ok(variants.some(v => v.color === 'Negro' && v.available));
   assert.ok(variants.some(v => v.color === 'Marrón' && !v.available));
 });
+
+test('buscar con o sin tildes produce los mismos resultados y conserva filtros', async () => {
+  const ids = rows => rows.map(row => row.id);
+  const canonical = await get('/catalog/products?q=' + encodeURIComponent('Botín'));
+  assert.ok(canonical.length > 0);
+  for (const term of ['botin', 'BOTÍN', 'Boti\u0301n']) {
+    assert.deepEqual(ids(await get('/catalog/products?q=' + encodeURIComponent(term))), ids(canonical));
+  }
+  assert.deepEqual(ids(await get('/catalog/products?q=mocasin')), ids(await get('/catalog/products?q=' + encodeURIComponent('mocasín'))));
+  assert.deepEqual(await get('/catalog/products?q=botin&category=oxford'), []);
+  assert.deepEqual(await get('/catalog/products?q=' + encodeURIComponent("%' OR 1=1 --")), []);
+  assert.deepEqual(await get('/catalog/products?q=%25'), []);
+  assert.deepEqual(await get('/catalog/products?q=%5F'), []);
+  assert.deepEqual(await get('/catalog/products?q=demostracion'), []);
+});
 test('rechaza entradas incorrectas y no expone escritura', async () => {
   for (const query of ['size=abc', 'size=-1', 'size=40.5', 'size=99', 'published=false', 'q=' + 'x'.repeat(101)]) {
     assert.equal((await fetch(`${base}/catalog/products?${query}`)).status, 400);

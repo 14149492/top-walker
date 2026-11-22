@@ -2,7 +2,7 @@ import Image from 'next/image';
 import type { Product } from '@/lib/catalog';
 // CSS windows into the supplied mockup are only used for labelled demo products.
 export function ProductPhoto({ photo, large = false }: { photo?: Product['photos'][number]; large?: boolean }) {
-  if (!photo) return <div className="product-photo photo-empty">Fotografía pendiente</div>;
+  if (!photo) return <div className="product-photo photo-empty">Fotografia pendiente</div>;
   const match = photo.url.match(/^\/demo\/catalog-reference\.png#([0-7])$/);
   if (match) {
     const index = Number(match[1]);

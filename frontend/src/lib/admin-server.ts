@@ -13,12 +13,12 @@ export async function adminFetch(path: string) {
 export async function requireAdmin(): Promise<AdminUser> {
   const response = await adminFetch('auth/me');
   if (response.status === 401 || response.status === 403) redirect('/admin/login');
-  if (!response.ok) throw new Error('El servicio administrativo no está disponible.');
+  if (!response.ok) throw new Error('El servicio administrativo no esta disponible.');
   return response.json();
 }
 export async function adminData<T>(path: string): Promise<T> {
   const response = await adminFetch(path);
   if (response.status === 401 || response.status === 403) redirect('/admin/login');
-  if (!response.ok) throw new Error('No se pudo consultar la información administrativa.');
+  if (!response.ok) throw new Error('No se pudo consultar la informacion administrativa.');
   return response.json();
 }

@@ -13,12 +13,12 @@ export function LoginForm() {
       // A document navigation drops cached anonymous server components after setting the session cookie.
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.assign('/admin');
-    } catch (error) { setError(error instanceof Error ? error.message : 'No se pudo iniciar sesión.'); setPending(false); }
+    } catch (error) { setError(error instanceof Error ? error.message : 'No se pudo iniciar sesion.'); setPending(false); }
   }
   return <form className="admin-form login-form" onSubmit={login}>
     <label>Correo o usuario<input name="identifier" autoComplete="username" required maxLength={254} autoCapitalize="none" /></label>
     <label>Contraseña<input name="password" type="password" autoComplete="current-password" required maxLength={128} /></label>
     {error && <p className="form-error" role="alert">{error}</p>}
-    <button className="button" disabled={!ready || pending} type="submit">{pending ? 'Ingresando…' : 'Iniciar sesión'}</button>
+    <button className="button" disabled={!ready || pending} type="submit">{pending ? 'Ingresando…' : 'Iniciar sesion'}</button>
   </form>;
 }

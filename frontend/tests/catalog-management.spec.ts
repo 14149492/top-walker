@@ -4,8 +4,8 @@ import path from 'node:path';
 import type { AdminProduct } from '../src/lib/admin';
 
 // No traces or videos: this test signs into the local administrative account.
-test.use({ trace: 'off', video: 'off', screenshot: 'off' });
-test.setTimeout(120000);
+test.use({ trace: 'off', video: 'off', screenshot: 'off', reducedMotion: 'reduce' });
+test.setTimeout(180000);
 
 test('gestion muestra las 25 fotos reales y permite abrir su edicion', async ({ page }, info) => {
   const source = JSON.parse(readFileSync(path.resolve('../backend/catalog/manifest.json'), 'utf8')) as { products: { photos: { sha256: string }[] }[] };

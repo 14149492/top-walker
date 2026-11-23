@@ -35,6 +35,14 @@ El listado publico muestra las **25 fotografias como presentaciones de 12 modelo
 
 La paleta se aplica en `frontend/src/app/commercial.css`; los textos compartidos de marca se mantienen en `frontend/src/lib/brand.ts`.
 
+El diseño recibido en `c194a17` añade una capa final `reference.css`, fuentes locales y fondos de estudio en `public/brand/`. Se conserva al sincronizar el repositorio. El panel `/admin/productos` muestra ahora las 25 fotos dentro de sus 12 modelos; cada miniatura lleva a la seccion Fotografias del editor. Publicar, retirar o editar siguen siendo operaciones del modelo completo.
+
+### Limpieza autorizada del catalogo local
+
+El 22 de noviembre se eliminaron las fotos de prueba por solicitud expresa del usuario. Se retiraron 74 referencias Photo y 67 archivos/MediaAsset ajenos al manifiesto, archivando logicamente 34 modelos demostrativos activos. Los productos, variantes y eventos historicos se conservan; las 25 fotos comerciales y los datos de sus modelos permanecieron identicos. Se verifico el respaldo antes de eliminar archivos activos.
+
+`backend/scripts/clean-catalog.cjs` ejecuta una simulacion por defecto. `--apply` es una operacion de mantenimiento destructiva sobre fotografias ajenas a este manifiesto y requiere una nueva decision explicita si se usa despues de añadir nuevos productos. **No forma parte del arranque ni de la importacion.** Ejecutarlo sin ediciones ni cargas simultaneas. Comprueba el manifiesto, las relaciones y las rutas locales, aborta ante cambios concurrentes o medios remotos y guarda un respaldo privado en `UPLOAD_DIR/.catalog-cleanup/` con `snapshot.json` y `files/`. El respaldo de esta limpieza es `2026-11-22T20-31-17-326Z`; no se publica ni se sube a Git. Una restauracion se realiza de manera controlada a partir de esos registros y archivos, sin sobrescribir los modelos comerciales.
+
 ### Comando de importacion
 
 Desde la raiz, con los servicios funcionando:
@@ -80,6 +88,8 @@ Eventos: `PRODUCT_VIEW`, `COLOR_SELECT`, `SIZE_SELECT`, `WHATSAPP_CLICK`. El ser
 - Eventos retenidos 365 dias; claves temporales vencidas limpiadas al iniciar y cada hora. La eliminacion logica conserva historial dentro de esta politica de retencion.
 
 `GET /api/admin/statistics` requiere autenticacion. `/admin/estadisticas` muestra vistas, clics, rankings, barras por fecha, tallas, colores, variantes y tasa clics/vistas. Usa datos agregados de PostgreSQL; no genera numeros de ejemplo. Periodos de 7/30/90 dias o rango de hasta 366 dias, con dias calendario de Bolivia (UTC-4). Un clic no es una venta; una seleccion no confirma compra. La tasa puede exceder 100 % cuando hay varias consultas por vista y no equivale a conversion de ventas.
+
+Todas las tablas por producto incluyen una miniatura de su foto principal actual. El campo `photo` contiene `url`, `alt` y `position`, o `null` si no hay foto. La imagen identifica el modelo completo; no representa necesariamente el color de la fila. Los historicos sin fotografia muestran Sin foto y mantienen sus metricas. Las imagenes de modelos retirados o eliminados siguen requiriendo sesion administrativa mediante la API de medios.
 
 La pagina publica `/privacidad` explica estos registros. Las pruebas automatizadas usan fixtures marcados como demostracion al finalizar para no dejar cifras ficticias en los informes comerciales.
 

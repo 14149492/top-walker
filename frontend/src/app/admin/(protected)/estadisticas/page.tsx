@@ -1,18 +1,24 @@
 import Link from 'next/link';
 import { adminData } from '@/lib/admin-server';
-type Rank = { id: string; name: string; deletedAt: string | null; views: number; clicks: number; rate: number | null };
-type Dimension = { productId: string; name: string; value: string; selections: number; clicks: number };
+import { ProductPhoto } from '@/components/product-photo';
+import type { Product } from '@/lib/catalog';
+type Photo = Product['photos'][number] | null;
+type Rank = { id: string; name: string; photo: Photo; deletedAt: string | null; views: number; clicks: number; rate: number | null };
+type Dimension = { productId: string; name: string; photo: Photo; value: string; selections: number; clicks: number };
 type Summary = {
   from: string; to: string; totals: { views: number; clicks: number; sizeSelections: number; colorSelections: number };
   byViews: Rank[]; byClicks: Rank[]; sizes: Dimension[]; colors: Dimension[];
   daily: { date: string; views: number; clicks: number }[];
-  variants: { productId: string; name: string; size: number; color: string; clicks: number }[];
+  variants: { productId: string; name: string; photo: Photo; size: number; color: string; clicks: number }[];
 };
+function StatsProduct({ name, photo }: { name: string; photo: Photo }) {
+  return <div className="stats-product"><div className="stats-product-photo">{photo ? <ProductPhoto photo={photo} /> : <span className="stats-no-photo">Sin foto</span>}</div><span>{name}</span></div>;
+}
 function Rankings({ title, rows }: { title: string; rows: Rank[] }) {
-  return <section className="stats-section"><h2>{title}</h2><div className="table-scroll"><table><thead><tr><th>Modelo</th><th>Vistas</th><th>Clics WhatsApp</th><th>Tasa de consulta</th></tr></thead><tbody>{rows.map(row => <tr key={row.id}><td>{row.name}{row.deletedAt && <small> · Eliminado</small>}</td><td>{row.views}</td><td>{row.clicks}</td><td>{row.rate === null ? 'Sin vistas' : `${row.rate} %`}</td></tr>)}</tbody></table></div>{!rows.length && <p className="muted">Sin interacciones en este periodo.</p>}</section>;
+  return <section className="stats-section"><h2>{title}</h2><div className="table-scroll"><table><thead><tr><th>Modelo</th><th>Vistas</th><th>Clics WhatsApp</th><th>Tasa de consulta</th></tr></thead><tbody>{rows.map(row => <tr key={row.id}><td><StatsProduct name={row.name} photo={row.photo} />{row.deletedAt && <small> · Eliminado</small>}</td><td>{row.views}</td><td>{row.clicks}</td><td>{row.rate === null ? 'Sin vistas' : `${row.rate} %`}</td></tr>)}</tbody></table></div>{!rows.length && <p className="muted">Sin interacciones en este periodo.</p>}</section>;
 }
 function Dimensions({ title, rows, label }: { title: string; rows: Dimension[]; label: string }) {
-  return <section className="stats-section"><h2>{title}</h2><div className="table-scroll"><table><thead><tr><th>Modelo</th><th>{label}</th><th>Selecciones</th><th>Clics WhatsApp</th></tr></thead><tbody>{rows.map(row => <tr key={row.productId + row.value}><td>{row.name}</td><td>{row.value}</td><td>{row.selections}</td><td>{row.clicks}</td></tr>)}</tbody></table></div>{!rows.length && <p className="muted">Sin selecciones registradas.</p>}</section>;
+  return <section className="stats-section"><h2>{title}</h2><div className="table-scroll"><table><thead><tr><th>Modelo</th><th>{label}</th><th>Selecciones</th><th>Clics WhatsApp</th></tr></thead><tbody>{rows.map(row => <tr key={row.productId + row.value}><td><StatsProduct name={row.name} photo={row.photo} /></td><td>{row.value}</td><td>{row.selections}</td><td>{row.clicks}</td></tr>)}</tbody></table></div>{!rows.length && <p className="muted">Sin selecciones registradas.</p>}</section>;
 }
 export default async function Statistics({ searchParams }: { searchParams: Promise<{ days?: string; from?: string; to?: string }> }) {
   const search = await searchParams;
@@ -32,7 +38,7 @@ export default async function Statistics({ searchParams }: { searchParams: Promi
     <Rankings title="Modelos mas visitados" rows={stats.byViews} /><Rankings title="Modelos mas consultados" rows={stats.byClicks} />
     <p className="muted">Tasa de consulta = clics a WhatsApp / vistas × 100. Puede superar el 100 % si una visita genera varias consultas distintas; no es una tasa de ventas.</p>
     <Dimensions title="Interes por talla" label="Talla" rows={stats.sizes} /><Dimensions title="Interes por color" label="Color" rows={stats.colors} />
-    <section className="stats-section"><h2>Variantes con mas consultas</h2><div className="table-scroll"><table><thead><tr><th>Modelo</th><th>Color</th><th>Talla</th><th>Clics WhatsApp</th></tr></thead><tbody>{stats.variants.map(row => <tr key={row.productId + row.color + row.size}><td>{row.name}</td><td>{row.color}</td><td>{row.size}</td><td>{row.clicks}</td></tr>)}</tbody></table></div>{!stats.variants.length && <p className="muted">Sin consultas con talla y color seleccionados.</p>}</section>
+    <section className="stats-section"><h2>Variantes con mas consultas</h2><div className="table-scroll"><table><thead><tr><th>Modelo</th><th>Color</th><th>Talla</th><th>Clics WhatsApp</th></tr></thead><tbody>{stats.variants.map(row => <tr key={row.productId + row.color + row.size}><td><StatsProduct name={row.name} photo={row.photo} /></td><td>{row.color}</td><td>{row.size}</td><td>{row.clicks}</td></tr>)}</tbody></table></div>{!stats.variants.length && <p className="muted">Sin consultas con talla y color seleccionados.</p>}</section>
     <p className="muted">Se conservan eventos durante 365 dias. Las selecciones indican interes y no confirman disponibilidad ni compra.</p>
   </section>;
 }

@@ -71,7 +71,9 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     const until = new Date(+end + 86400000);
     const where = { createdAt: { gte: start, lt: until }, product: { demo: false } };
     const groups = await this.db.catalogEvent.groupBy({ by: ['productId', 'type', 'size', 'color'], where, _count: { _all: true } });
-    const products = await this.db.product.findMany({ where: { id: { in: [...new Set(groups.map(g => g.productId))] } }, select: { id: true, name: true, deletedAt: true } });
+    const records = await this.db.product.findMany({ where: { id: { in: [...new Set(groups.map(g => g.productId))] } }, select: { id: true, name: true, deletedAt: true, photos: { orderBy: { position: 'asc' }, take: 1, select: { url: true, alt: true, position: true } } } });
+    const products = records.map(({ photos, ...product }) => ({ ...product, photo: photos[0] ?? null }));
+    const productsById = new Map(products.map(product => [product.id, product]));
     const ranking = products.map(p => {
       const count = (type: string) => groups.filter(g => g.productId === p.id && g.type === type).reduce((n, g) => n + g._count._all, 0);
       const views = count('PRODUCT_VIEW'), clicks = count('WHATSAPP_CLICK');
@@ -79,11 +81,12 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     });
     const sum = (type: string) => groups.filter(g => g.type === type).reduce((n, g) => n + g._count._all, 0);
     const dimensions = (kind: 'size' | 'color') => {
-      const map = new Map<string, { productId: string; name: string; value: string; selections: number; clicks: number }>();
+      const map = new Map<string, { productId: string; name: string; photo: typeof products[number]['photo']; value: string; selections: number; clicks: number }>();
       for (const g of groups) {
         if (g[kind] === null || ![kind === 'size' ? 'SIZE_SELECT' : 'COLOR_SELECT', 'WHATSAPP_CLICK'].includes(g.type)) continue;
         const key = `${g.productId}:${g[kind]}`;
-        const row = map.get(key) || { productId: g.productId, name: products.find(p => p.id === g.productId)!.name, value: String(g[kind]), selections: 0, clicks: 0 };
+        const product = productsById.get(g.productId)!;
+        const row = map.get(key) || { productId: g.productId, name: product.name, photo: product.photo, value: String(g[kind]), selections: 0, clicks: 0 };
         if (g.type === 'WHATSAPP_CLICK') row.clicks += g._count._all; else row.selections += g._count._all;
         map.set(key, row);
       }
@@ -101,7 +104,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       totals: { views: sum('PRODUCT_VIEW'), clicks: sum('WHATSAPP_CLICK'), sizeSelections: sum('SIZE_SELECT'), colorSelections: sum('COLOR_SELECT') },
       byViews: [...ranking].sort((a, b) => b.views - a.views), byClicks: [...ranking].sort((a, b) => b.clicks - a.clicks),
       sizes: dimensions('size'), colors: dimensions('color'), daily,
-      variants: groups.filter(g => g.type === 'WHATSAPP_CLICK' && g.size !== null && g.color !== null).map(g => ({ productId: g.productId, name: products.find(p => p.id === g.productId)!.name, size: g.size, color: g.color, clicks: g._count._all })).sort((a, b) => b.clicks - a.clicks),
+      variants: groups.filter(g => g.type === 'WHATSAPP_CLICK' && g.size !== null && g.color !== null).map(g => ({ productId: g.productId, name: productsById.get(g.productId)!.name, photo: productsById.get(g.productId)!.photo, size: g.size, color: g.color, clicks: g._count._all })).sort((a, b) => b.clicks - a.clicks),
     };
   }
 }

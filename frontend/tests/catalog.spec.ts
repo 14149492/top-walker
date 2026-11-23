@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
 import type { Product } from '../src/lib/catalog';
+test.use({ reducedMotion: 'reduce' });
+// This walkthrough loads all 25 photos and exercises several pages in Docker development mode.
+test.setTimeout(120000);
 const photoCount = (products: Product[]) => products.reduce((count, product) => count + Math.max(1, product.photos.length), 0);
 test('inicio, catálogo, filtros y disponibilidad por talla/color', async ({ page }, info) => {
   await page.route('**/api/events', route => route.fulfill({ status: 503, contentType: 'application/json', body: '{"message":"Prueba: estadisticas no disponibles"}' }));

@@ -1,5 +1,23 @@
 # Top Walker — progreso
 
+## 2026-11-22 · Fotografias en las estadisticas
+
+- La API administrativa de estadisticas incluye la primera foto ordenada de cada modelo (`url`, `alt`, `position`) o `null` si ya no tiene fotografia. Se consulta en bloque con los productos del informe; no cambia los conteos ni crea eventos.
+- Miniatura junto al nombre en rankings de vistas/consultas, interes por talla/color y consultas por variante. Se reutiliza `ProductPhoto`, con tamaño adaptable y texto Sin foto para historicos sin imagen. Se mantiene la proteccion administrativa y el diseño recibido.
+- Archivos: `backend/src/analytics/analytics.service.ts`, pagina administrativa de estadisticas, `commercial.css`, pruebas `backend/test/statistics-photos.test.cjs` y `frontend/tests/statistics-photos.spec.ts`.
+- Tipos backend, lint frontend/backend y compilacion Next.js con TypeScript aprobados. **2/2 pruebas backend** aprobadas: imagen principal en los cinco informes y caso historico sin imagen, manteniendo metricas. **3/3 recorridos de navegador** aprobados en 360/768/1920 px: API protegida, acceso administrativo, cinco filas con cinco miniaturas reales cargadas por ancho, ausencia de desbordamiento de pagina y cierre de sesion. Revision visual de escritorio completada. Sin crear productos, fotos ni eventos de prueba. Cambios locales, sin nuevo commit/push.
+
+## 2026-11-22 · Gestion de las 25 fotos, limpieza y sincronizacion del diseño
+
+- Ejecutados `git fetch origin` y `git pull --ff-only origin main` por solicitud del usuario. Resultado: `Already up to date`, HEAD y origin/main en `c194a17`. El arbol estaba limpio porque ese commit ya incluia los avances locales. Se revisaron y conservaron `reference.css`, sus tipografias locales y los recursos de fondo/hero incorporados por el usuario; no hubo conflictos ni sustitucion del diseño recibido.
+- El listado administrativo ahora muestra todas las fotografias por modelo, su color, la principal y un contador total. Cada foto enlaza a la seccion Fotografias del formulario. Se mantienen una sola edicion/publicacion por modelo y las relaciones existentes: 12 modelos, 25 fotos, sin crear productos duplicados.
+- Limpieza expresamente solicitada ejecutada con `backend/scripts/clean-catalog.cjs --apply`, previa simulacion y respaldo verificado. Eliminadas 74 referencias de fotos ajenas al manifiesto y 67 registros/archivos locales de medios. Archivados logicamente 34 modelos demostrativos que seguian en el panel. No se borraron productos, variantes, eventos, cuentas, volumenes ni originales suministrados.
+- Verificacion de integridad posterior: los datos de los 12 modelos comerciales y los bytes de sus 25 fotos permanecen identicos. Segunda simulacion: cero fotos, archivos o modelos pendientes de limpieza; quedan 25 registros Photo y 25 MediaAsset.
+- Respaldo privado de registros e imagenes retiradas: `/app/uploads/.catalog-cleanup/2026-11-22T20-31-17-326Z/`, dentro del volumen de Top Walker, fuera de las rutas servidas por la API. Las referencias visuales y los fondos del sitio no son productos y se conservan.
+- Compilacion de produccion Next.js (incluye TypeScript) y lint aprobados. Primera pasada de navegador: 5/9 aprobadas; 4 fallos por tiempo/conexion mientras se actualizaba el diseño y se compilaba. Se ajusto el tiempo total de los recorridos que cargan todas las imagenes y se desactivo el desplazamiento animado en las pruebas, conservando las mismas comprobaciones.
+- Verificacion final sobre el commit sincronizado: **9/9 recorridos aprobados en 360/768/1920 px**. Incluye login, 25 fotos administrativas contrastadas con el manifiesto y cargadas con `img.decode()`, busqueda Mustang con 4 fotos, apertura del editor, cierre de sesion, catalogo publico, filtros, galeria por color, WhatsApp interceptado, rutas retiradas y conexion PostgreSQL. Sin registros comerciales ni eventos de prueba añadidos. Revision visual de inicio movil y gestion escritorio completada; capturas locales en `frontend/test-results/` y `.work/studio-review/`.
+- Pendientes de esta entrega: los ajustes posteriores de pruebas y documentacion permanecen locales, sin un nuevo commit/push. Las existencias reales continuan pendientes de confirmacion administrativa, como se documento en la importacion.
+
 ## 2026-11-22 · Correccion visual, 25 presentaciones y contenido de marca
 
 - Sustituidos los acentos cafe/bronce por blanco y grises neutros en la capa visual compartida del sitio y administracion, siguiendo la ultima referencia del usuario. Se conservan el logotipo y los colores naturales de los zapatos.

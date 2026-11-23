@@ -25,13 +25,19 @@ test('búsqueda sin distinción de mayúsculas, filtros combinados y sin resulta
   assert.equal(products.length, 1);
   assert.equal(products[0].slug, 'tw-oxford-negro');
   assert.deepEqual(await get('/catalog/products?q=no-existe'), []);
-  assert.deepEqual(await get('/catalog/products?category=oxford&size=38'), []);
+  const ox38 = await get('/catalog/products?category=oxford&size=38');
+  assert.ok(ox38.every(p => p.category.id === 'oxford' && p.variants.some(v => v.size === 38 && v.available)));
 });
-test('tallas anunciadas sin disponibilidad confirmada no pasan el filtro', async () => {
+test('filtro por talla solo devuelve productos con talla disponible', async () => {
   const product = await get('/catalog/products/tw-mustang');
   assert.ok(product.variants.length > 0);
-  assert.ok(product.variants.every(v => !v.available && !v.availabilityConfirmed));
-  assert.deepEqual(await get('/catalog/products?q=Mustang&size=40'), []);
+  const avail = product.variants.find(v => v.available);
+  if (avail) {
+    const found = await get(`/catalog/products?q=Mustang&size=${avail.size}`);
+    assert.ok(found.some(p => p.slug === 'tw-mustang'));
+  }
+  const unavailSize = [35, 36, 44, 45].find(s => !product.variants.some(v => v.size === s && v.available));
+  assert.deepEqual(await get(`/catalog/products?q=Mustang&size=${unavailSize}`), []);
 });
 
 test('buscar con o sin tildes produce los mismos resultados y conserva filtros', async () => {

@@ -267,3 +267,24 @@ Sprint 1: **8 puntos**. Sprint 2: **9 puntos**. Las evidencias siguientes corres
   - **Fondo arquitectónico de estudio en todo el sitio (`frontend/public/brand/studio-bg.jpg`, `reference.css`)**: textura de concreto/piedra oscura con haces de luz diagonales y juntas arquitectónicas en `body`, además de escena de estudio con foco y calzado sobre pedestal en la página de **Contacto** (`/contacto`) y en el encabezado de **Catálogo** (`/catalogo`), manteniendo intacta la portada principal (`/`).
   - **Tipografía editorial de marca (`frontend/public/fonts/playfair*.woff2`, `cinzel*.woff2`, `reference.css`)**: títulos principales y precios en **Playfair Display** (con segunda línea `<em>` en cursiva editorial y degradado metálico), logotipo y etiquetas superiores (`eyebrow`) en **Cinzel**, e interfaz/cuerpo en **Plus Jakarta Sans**.
   - Verificado con capturas en 1536 px de `/` y `/contacto`.
+
+
+## Migración de imágenes a Cloudinary (2026-11-23)
+
+- Se configuró `MEDIA_STORAGE=cloudinary` y las credenciales de Cloudinary en `.env` local (ignorado por Git).
+- Se creó el script `backend/scripts/migrate-media-to-cloudinary.cjs` y se ejecutó contra `topwalker-backend`.
+- Resultado: 25/25 fotografías del catálogo migradas a Cloudinary (`topwalker/<id>`) y actualizadas en la tabla `MediaAsset` (`provider = 'cloudinary'`, `remoteUrl = https://res.cloudinary.com/...`), 0 errores y 0 archivos locales pendientes.
+- Verificado: `/api/media/<id>` redirige correctamente a `https://res.cloudinary.com/...` y entrega la imagen en WebP.
+
+
+## Cierre de pendientes funcionales, administración y pulido (2026-11-23)
+
+- **Disponibilidad aleatoria confirmada (`backend/scripts/randomize-availability.cjs`)**: conforme a `AGENTS.md` (sin inventario numérico), se confirmó la disponibilidad de todas las variantes del catálogo real marcando aleatoriamente entre 1 y 4 tallas como `available = true` por cada combinación de modelo y color (25 grupos: 63 disponibles, 97 agotadas).
+- **WhatsApp (`.env`)**: configurado `WHATSAPP_NUMBER=59176928024` (Bolivia + `76928024`) y verificado en los enlaces del detalle de producto y `/contacto`.
+- **Limpieza de imágenes huérfanas (`backend/src/media/media.service.ts`, `media.controller.ts`, `admin.service.ts`, `product-form.tsx`)**: agregado `DELETE /api/admin/media/:id` para eliminar fotos recién subidas y quitadas antes de guardar, y limpieza automática en Cloudinary (`cloudinary.uploader.destroy`) y disco local al retirar fotografías de un producto existente.
+- **Gestión de categorías (`admin.controller.ts`, `admin.service.ts`, `/admin/categorias`)**: agregados `PUT /api/admin/categories/:id` y `DELETE /api/admin/categories/:id` (rechaza borrar categorías con productos asociados) y pantalla de administración en `frontend/src/app/admin/(protected)/categorias/page.tsx`.
+- **Cambio de contraseña (`auth.controller.ts`, `auth.service.ts`, `/admin/cuenta`)**: agregado `POST /api/auth/change-password` con validación de contraseña actual, hash seguro y revocación de otras sesiones activas, más interfaz en `frontend/src/app/admin/(protected)/cuenta/page.tsx`.
+- **Portada sincronizada y tildes (`page.tsx`, `reference.css`, `header.tsx`, `catalogo/page.tsx`, `contacto/page.tsx`, `not-found.tsx`, `catalog-filters.tsx`, `brand.ts`)**: la composición de estudio de *Mustang* solo se aplica cuando *Mustang* es el producto destacado (con respaldo dinámico a `--hero-image` si se retira) y se corrigieron las tildes en toda la interfaz pública.
+- **Verificación**:
+  - Backend: `lint`, `typecheck`, `build` y `node --test test/catalog.test.mjs test/model.test.mjs` (**12/12 aprobadas**).
+  - Frontend: `lint`, `typecheck` y Playwright `tests/catalog.spec.ts` en 360 px y 1920 px (**4/4 aprobadas**, incluyendo carga de las 25 fotos desde Cloudinary, sin desbordamiento horizontal y enlace `wa.me/59176928024`).

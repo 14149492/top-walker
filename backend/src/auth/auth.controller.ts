@@ -8,6 +8,10 @@ class LoginDto {
   @IsString() @Length(1, 254) identifier!: string;
   @IsString() @Length(1, 128) @MaxLength(128) password!: string;
 }
+class ChangePasswordDto {
+  @IsString() @Length(1, 128) currentPassword!: string;
+  @IsString() @Length(8, 128) newPassword!: string;
+}
 @Controller('auth')
 @UseGuards(OriginGuard)
 export class AuthController {
@@ -26,4 +30,8 @@ export class AuthController {
   }
   @Get('me') @UseGuards(AdminGuard)
   me(@Req() req: Request) { return this.auth.current(req.headers.cookie); }
+  @Post('change-password') @HttpCode(200) @UseGuards(AdminGuard)
+  changePassword(@Body() body: ChangePasswordDto, @Req() req: Request) {
+    return this.auth.changePassword(req.headers.cookie, body.currentPassword, body.newPassword);
+  }
 }

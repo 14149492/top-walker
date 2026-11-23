@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import sharp from 'sharp';
 import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
@@ -52,5 +52,28 @@ export class MediaService {
     if (asset.provider === 'cloudinary' && asset.remoteUrl?.startsWith('https://res.cloudinary.com/')) return { url: asset.remoteUrl };
     try { return { buffer: await readFile(join(this.directory, asset.storageKey)) }; }
     catch { throw new NotFoundException('Imagen no disponible.'); }
+  }
+  async deleteUnattached(id: string) {
+    const asset = await this.db.mediaAsset.findUnique({ where: { id }, include: { photos: { take: 1, select: { id: true } } } });
+    if (!asset || asset.photos.length) return { deleted: false };
+    await this.removeBinary(asset);
+    await this.db.mediaAsset.deleteMany({ where: { id, photos: { none: {} } } });
+    return { deleted: true };
+  }
+  async cleanupOrphans(ids: string[]) {
+    for (const id of new Set(ids.filter(Boolean))) {
+      try { await this.deleteUnattached(id); } catch { /* ignore transient storage cleanup errors */ }
+    }
+  }
+  private async removeBinary(asset: { provider: string; storageKey: string }) {
+    if (asset.provider === 'cloudinary') {
+      const cloud_name = process.env.CLOUDINARY_CLOUD_NAME, api_key = process.env.CLOUDINARY_API_KEY, api_secret = process.env.CLOUDINARY_API_SECRET;
+      if (cloud_name && api_key && api_secret) {
+        cloudinary.config({ cloud_name, api_key, api_secret });
+        await cloudinary.uploader.destroy(asset.storageKey, { resource_type: 'image' });
+      }
+    } else if (asset.provider === 'local') {
+      await unlink(join(this.directory, asset.storageKey)).catch(() => {});
+    }
   }
 }

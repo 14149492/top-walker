@@ -2,6 +2,7 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 import { Prisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../database/prisma.service';
+import { MediaService } from '../media/media.service';
 import { ProductDto, PublicationDto } from './product.dto';
 import { productNameFilter } from '../database/product-search';
 
@@ -11,7 +12,7 @@ type Transaction = Prisma.TransactionClient;
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly db: PrismaService) {}
+  constructor(private readonly db: PrismaService, private readonly media: MediaService) {}
   async list(q?: string) {
     return this.db.product.findMany({ where: { deletedAt: null, ...await productNameFilter(this.db, q) }, include, orderBy: [{ updatedAt: 'desc' }, { id: 'asc' }] });
   }
@@ -20,7 +21,7 @@ export class AdminService {
     if (!product || product.deletedAt) throw new NotFoundException('Modelo no encontrado.');
     return product;
   }
-  categories() { return this.db.category.findMany({ orderBy: { name: 'asc' } }); }
+  categories() { return this.db.category.findMany({ orderBy: { name: 'asc' }, include: { _count: { select: { products: { where: { deletedAt: null } } } } } }); }
   async createCategory(name: string) {
     return this.db.$transaction(async tx => {
       await tx.$queryRaw`SELECT 1 AS locked FROM pg_advisory_xact_lock(hashtext(${`category:${normalized(name)}`}))`;
@@ -28,6 +29,23 @@ export class AdminService {
       if (existing) return existing;
       return tx.category.create({ data: { id: randomUUID(), name } });
     });
+  }
+  async updateCategory(id: string, name: string) {
+    return this.db.$transaction(async tx => {
+      const current = await tx.category.findUnique({ where: { id } });
+      if (!current) throw new NotFoundException('Categoría no encontrada.');
+      await tx.$queryRaw`SELECT 1 AS locked FROM pg_advisory_xact_lock(hashtext(${`category:${normalized(name)}`}))`;
+      const duplicate = await tx.category.findFirst({ where: { name: { equals: name, mode: 'insensitive' }, id: { not: id } } });
+      if (duplicate) throw new ConflictException('Ya existe una categoría con ese nombre.');
+      return tx.category.update({ where: { id }, data: { name } });
+    });
+  }
+  async deleteCategory(id: string) {
+    const current = await this.db.category.findUnique({ where: { id }, include: { _count: { select: { products: true } } } });
+    if (!current) throw new NotFoundException('Categoría no encontrada.');
+    if (current._count.products > 0) throw new ConflictException('No se puede eliminar una categoría asociada a productos.');
+    await this.db.category.delete({ where: { id } });
+    return { message: 'Categoría eliminada.' };
   }
   private async validate(tx: Transaction, dto: ProductDto, id?: string) {
     if (new Prisma.Decimal(dto.price).lte(0)) throw new BadRequestException('El precio debe ser mayor que cero.');
@@ -90,6 +108,7 @@ export class AdminService {
       else await tx.variant.create({ data: { ...variantData, productId } });
     }
     const keepPhotos = dto.photos.flatMap(p => p.id ? [p.id] : []);
+    const removedAssets = originalPhotos.filter(p => !keepPhotos.includes(p.id) && p.assetId).map(p => p.assetId as string);
     await tx.photo.deleteMany({ where: { productId, id: { notIn: keepPhotos } } });
     const offset = Math.max(0, ...originalPhotos.map(p => p.position)) + dto.photos.length + 1;
     await tx.photo.updateMany({ where: { productId }, data: { position: { increment: offset } } });
@@ -103,10 +122,14 @@ export class AdminService {
         await tx.photo.create({ data: { productId, assetId: asset.id, url: `/api/media/${asset.id}`, alt: photo.alt, position, color: photo.color || null } });
       }
     }
-    return tx.product.findUniqueOrThrow({ where: { id: productId }, include });
+    return { product: await tx.product.findUniqueOrThrow({ where: { id: productId }, include }), removedAssets };
   }
   private async transaction(dto: ProductDto, id?: string) {
-    try { return await this.db.$transaction(tx => this.save(tx, dto, id), { timeout: 20000 }); }
+    try {
+      const { product, removedAssets } = await this.db.$transaction(tx => this.save(tx, dto, id), { timeout: 20000 });
+      if (removedAssets.length) await this.media.cleanupOrphans(removedAssets);
+      return product;
+    }
     catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && ['P2002', 'P2034'].includes(error.code)) throw new ConflictException('Los datos entran en conflicto con otro registro. Recarga y revisa el formulario.');
       throw error;

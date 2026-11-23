@@ -40,6 +40,6 @@ test('gestion muestra las 25 fotos reales y permite abrir su edicion', async ({ 
   await expect(page.locator('#fotografias')).toBeVisible();
   await expect(page.locator('.photo-editor-card')).toHaveCount(4);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.getByRole('button', { name: 'Cerrar sesion' }).click();
+  await page.getByRole('button', { name: 'Cerrar sesión' }).click();
   await expect(page).toHaveURL(/\/admin\/login$/);
 });

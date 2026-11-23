@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { Matches } from 'class-validator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Request, Response } from 'express';
@@ -18,6 +18,8 @@ export class MediaController {
   @Post('admin/media') @UseGuards(AdminGuard, OriginGuard)
   @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 5 * 1024 * 1024, files: 1 } }))
   upload(@UploadedFile() file?: Express.Multer.File) { return this.media.upload(file); }
+  @Delete('admin/media/:id') @UseGuards(AdminGuard, OriginGuard)
+  remove(@Param() params: MediaIdDto) { return this.media.deleteUnattached(params.id); }
   @Get('media/:id')
   async image(@Param() params: MediaIdDto, @Req() req: Request, @Res() res: Response) {
     const asset = await this.media.read(params.id, req.headers.cookie);

@@ -23,7 +23,7 @@ test('TW, estadisticas reales de fixture, WhatsApp y eliminacion logica', async 
     const data = { name, description: 'Fixture automatizada temporal, no es una oferta comercial.', categoryId: source.categoryId, material: 'Prueba', price: '1', published: true, demo: false, variants: [{ color: 'Negro', size: 40, available: false, availabilityConfirmed: false }], photos: [{ assetId: source.photos[0].assetId, alt: 'Fixture de prueba' }] };
     const create = await page.request.post('/api/admin/products', { headers, data }); expect(create.status()).toBe(201);
     const product = await create.json(); id = product.id;
-    await page.getByRole('button', { name: 'Cerrar sesion' }).click();
+    await page.getByRole('button', { name: 'Cerrar sesión' }).click();
     await expect(page).toHaveURL(/\/admin\/login$/);
     const events: Promise<number>[] = [];
     page.on('response', response => { if (response.url().endsWith('/api/events')) events.push(Promise.resolve(response.status())); });
@@ -39,7 +39,7 @@ test('TW, estadisticas reales de fixture, WhatsApp y eliminacion logica', async 
     expect(await Promise.all(events)).toEqual([201, 201, 201, 201]);
     await login();
     await page.getByRole('link', { name: 'Acceso al panel Top Walker' }).click(); await expect(page).toHaveURL(/\/admin$/);
-    await page.getByRole('link', { name: 'Estadisticas', exact: true }).click();
+    await page.getByRole('link', { name: 'Estadísticas', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Estadisticas comerciales' })).toBeVisible();
     await expect(page.getByRole('row').filter({ hasText: name }).first()).toContainText('100 %');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

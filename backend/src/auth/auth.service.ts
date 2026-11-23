@@ -1,4 +1,4 @@
-import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { createHash, randomBytes } from 'node:crypto';
 import { PrismaService } from '../database/prisma.service';
 import { hashPassword, verifyPassword } from './password';
@@ -54,5 +54,20 @@ export class AuthService {
   async logout(cookie?: string) {
     const token = this.token(cookie);
     if (token) await this.db.adminSession.deleteMany({ where: { tokenHash: digest(token) } });
+  }
+  async changePassword(cookie: string | undefined, currentPassword: string, newPassword: string) {
+    const token = this.token(cookie);
+    if (!token) throw new UnauthorizedException('Sesión no válida.');
+    const tokenHash = digest(token);
+    const session = await this.db.adminSession.findUnique({ where: { tokenHash }, include: { user: true } });
+    if (!session || session.expiresAt <= new Date() || !session.user.active) throw new UnauthorizedException('Sesión no válida.');
+    if (!await verifyPassword(currentPassword, session.user.passwordHash)) throw new UnauthorizedException('La contraseña actual es incorrecta.');
+    if (currentPassword === newPassword) throw new BadRequestException('La nueva contraseña debe ser diferente a la actual.');
+    const passwordHash = await hashPassword(newPassword);
+    await this.db.$transaction([
+      this.db.adminUser.update({ where: { id: session.user.id }, data: { passwordHash } }),
+      this.db.adminSession.deleteMany({ where: { userId: session.user.id, tokenHash: { not: tokenHash } } }),
+    ]);
+    return { message: 'Contraseña actualizada correctamente.' };
   }
 }

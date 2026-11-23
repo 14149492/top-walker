@@ -7,6 +7,7 @@
   src: url('/fonts/playfair-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
+
 @font-face {
   font-family: 'Playfair Display';
   font-style: normal;
@@ -15,6 +16,7 @@
   src: url('/fonts/playfair-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
 @font-face {
   font-family: 'Playfair Display';
   font-style: italic;
@@ -23,6 +25,7 @@
   src: url('/fonts/playfair-italic-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
+
 @font-face {
   font-family: 'Playfair Display';
   font-style: italic;
@@ -31,6 +34,7 @@
   src: url('/fonts/playfair-italic-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
 @font-face {
   font-family: 'Cinzel';
   font-style: normal;
@@ -39,6 +43,7 @@
   src: url('/fonts/cinzel-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
+
 @font-face {
   font-family: 'Cinzel';
   font-style: normal;
@@ -47,6 +52,7 @@
   src: url('/fonts/cinzel-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
 @font-face {
   font-family: 'Plus Jakarta Sans';
   font-style: normal;
@@ -100,13 +106,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, .detail-info h1, .form-section legend {
+h1,
+h2,
+h3,
+.detail-info h1,
+.form-section legend {
   font-family: var(--font-display);
 }
-.brand, .brand-wordmark, .footer-brand {
+
+.brand,
+.brand-wordmark,
+.footer-brand {
   font-family: var(--font-brand);
 }
-.price, .detail-price {
+
+.price,
+.detail-price {
   font-family: var(--font-display);
 }
 
@@ -162,27 +177,23 @@ h1, h2, h3, .detail-info h1, .form-section legend {
   color: #a8a8ae;
   margin-top: 4px;
 }
-.site-header nav { gap: 36px; font-size: 14.5px; font-weight: 500; letter-spacing: 0.015em; }
-.site-header nav a { padding: 26px 0 24px; color: #d8d8dc; border-bottom-width: 2px; }
-.site-header nav a:hover { color: #ffffff; border-color: #888890; }
-.site-header nav a[aria-current=page] { color: #ffffff; font-weight: 600; border-color: #ffffff; }
 
 .site-header nav {
   gap: 36px;
   font-size: 14.5px;
   font-weight: 500;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.015em;
 }
 
 .site-header nav a {
   padding: 26px 0 24px;
-  color: #d6d6da;
+  color: #d8d8dc;
   border-bottom-width: 2px;
 }
 
 .site-header nav a:hover {
   color: #ffffff;
-  border-color: #77777c;
+  border-color: #888890;
 }
 
 .site-header nav a[aria-current=page] {
@@ -342,12 +353,45 @@ h1, h2, h3, .detail-info h1, .form-section legend {
   clip-path: inset(0 -100vmax -1px);
   backdrop-filter: blur(8px);
 }
-.values > div { gap: 16px; padding: 0 28px; justify-content: center; }
-.values > div + div { border-left: 1px solid rgba(255, 255, 255, 0.1); }
-.value-icon { display: grid; place-items: center; width: 42px; height: 42px; color: #ececef; font-size: 0; flex-shrink: 0; }
-.value-icon svg { width: 35px; height: 35px; }
-.values h2 { font-family: var(--font-sans); font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: #ffffff; margin-bottom: 2px; }
-.values p { font-size: 12.5px; color: #b0b0b6; }
+
+.values>div {
+  gap: 16px;
+  padding: 0 28px;
+  justify-content: center;
+}
+
+.values>div+div {
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.value-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  color: #ececef;
+  font-size: 0;
+  flex-shrink: 0;
+}
+
+.value-icon svg {
+  width: 35px;
+  height: 35px;
+}
+
+.values h2 {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+
+.values p {
+  font-size: 12.5px;
+  color: #b0b0b6;
+}
 
 /* Collections section */
 .collections {
@@ -585,7 +629,7 @@ h1, h2, h3, .detail-info h1, .form-section legend {
   align-items: flex-start;
 }
 
-.contact-page > * {
+.contact-page>* {
   position: relative;
   z-index: 1;
   max-width: 650px;
@@ -600,7 +644,8 @@ h1, h2, h3, .detail-info h1, .form-section legend {
   margin-bottom: 22px;
   text-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
 }
-.contact-page > p:not(.eyebrow) {
+
+.contact-page>p:not(.eyebrow) {
   color: #d8d8de;
   font-size: 16.5px;
   line-height: 1.7;
@@ -614,6 +659,7 @@ h1, h2, h3, .detail-info h1, .form-section legend {
   background: #18191c;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
+
 .catalog-hero .hero-art {
   inset: 0;
   opacity: 1;
@@ -621,16 +667,36 @@ h1, h2, h3, .detail-info h1, .form-section legend {
     linear-gradient(90deg, rgba(20, 21, 24, 0.92) 0%, rgba(20, 21, 24, 0.75) 45%, rgba(20, 21, 24, 0.25) 75%, rgba(20, 21, 24, 0.4) 100%),
     url('/brand/hero-scene.jpg?v=3') center 38% / cover no-repeat;
 }
+
 .catalog-hero h1 {
   font-family: var(--font-display);
   font-size: clamp(38px, 4.2vw, 56px);
   font-weight: 700;
   letter-spacing: -0.02em;
 }
-.filter-heading { border-color: rgba(255, 255, 255, 0.12); }
-.filter-heading h2 { font-family: var(--font-display); font-size: 23px; font-weight: 700; }
-.detail-info h1 { font-family: var(--font-display); font-style: normal; font-weight: 700; letter-spacing: -0.02em; }
-.detail-price { font-family: var(--font-display); font-weight: 700; color: #ffffff; }
+
+.filter-heading {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.filter-heading h2 {
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.detail-info h1 {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.detail-price {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: #ffffff;
+}
 
 /* Footer */
 .footer {
@@ -638,6 +704,7 @@ h1, h2, h3, .detail-info h1, .form-section legend {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
 }
+
 .footer-brand {
   font-family: var(--font-brand);
   font-weight: 700;
@@ -648,25 +715,81 @@ h1, h2, h3, .detail-info h1, .form-section legend {
 }
 
 @media (max-width: 1100px) {
-  .values > div { padding: 0 14px; }
-  .about, .contact-page { padding: 44px 38px; }
+  .values>div {
+    padding: 0 14px;
+  }
+
+  .about,
+  .contact-page {
+    padding: 44px 38px;
+  }
 }
+
 @media (max-width: 800px) {
-  .header-inner { min-height: 68px; }
-  .site-header nav { gap: 20px; font-size: 13.5px; }
-  .hero > .hero-art, .hero.hero-real > .hero-art { background-position: 72% center; opacity: 0.45; }
-  .values > div { justify-content: flex-start; }
-  .values > div + div { border-left: 0; border-top: 1px solid rgba(255, 255, 255, 0.1); }
-  .about, .contact-page { padding: 36px 26px; }
+  .header-inner {
+    min-height: 68px;
+  }
+
+  .site-header nav {
+    gap: 20px;
+    font-size: 13.5px;
+  }
+
+  .hero>.hero-art,
+  .hero.hero-real>.hero-art {
+    background-position: 72% center;
+    opacity: 0.45;
+  }
+
+  .values>div {
+    justify-content: flex-start;
+  }
+
+  .values>div+div {
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .about,
+  .contact-page {
+    padding: 36px 26px;
+  }
+
   .contact-page {
     background:
       linear-gradient(90deg, rgba(20, 21, 24, 0.92) 0%, rgba(20, 21, 24, 0.78) 100%),
       url('/brand/hero-scene.jpg?v=3') 72% center / cover no-repeat;
   }
 }
+
 @media (max-width: 550px) {
-  .header-inner { padding-bottom: 4px; }
-  .site-header nav a { padding: 10px 0 12px; }
-  .hero h1, .contact-page h1 { font-size: 40px; }
-  .collection-grid { grid-template-columns: 1fr; }
+  .header-inner {
+    padding-bottom: 4px;
+  }
+
+  .site-header nav a {
+    padding: 10px 0 12px;
+  }
+
+  .hero h1,
+  .contact-page h1 {
+    font-size: 40px;
+  }
+
+  .collection-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Fallback dinamico si el modelo Mustang no es el producto destacado de la portada */
+.hero.hero-real:not(.hero-studio-mustang)>.hero-art {
+  left: auto;
+  right: max(32px, 6%);
+  top: 0;
+  bottom: 0;
+  width: min(56%, 720px);
+  height: 100%;
+  background: var(--hero-image) center / contain no-repeat;
+  -webkit-mask-image: radial-gradient(ellipse 68% 72% at 52% 50%, #000 45%, transparent 98%);
+  mask-image: radial-gradient(ellipse 68% 72% at 52% 50%, #000 45%, transparent 98%);
 }

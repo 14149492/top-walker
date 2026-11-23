@@ -32,6 +32,6 @@ test('estadisticas muestran las fotos devueltas por la API protegida', async ({ 
   await page.evaluate(() => scrollTo(0, 0));
   await page.screenshot({ path: `test-results/statistics-photos-${info.project.name}.png`, fullPage: true });
   console.log(`${info.project.name}: ${rows.length} filas, ${photos.length} fotos verificadas; datos existentes, sin eventos de prueba.`);
-  await page.getByRole('button', { name: 'Cerrar sesion' }).click();
+  await page.getByRole('button', { name: 'Cerrar sesión' }).click();
   await expect(page).toHaveURL(/\/admin\/login$/);
 });

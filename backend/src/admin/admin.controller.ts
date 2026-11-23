@@ -15,4 +15,6 @@ export class AdminController {
   @Patch('products/:id/publication') publish(@Param('id') id: string, @Body() body: PublicationDto) { return this.admin.publish(id, body); }
   @Get('categories') categories() { return this.admin.categories(); }
   @Post('categories') category(@Body() body: CategoryDto) { return this.admin.createCategory(body.name); }
+  @Put('categories/:id') updateCategory(@Param('id') id: string, @Body() body: CategoryDto) { return this.admin.updateCategory(id, body.name); }
+  @Delete('categories/:id') deleteCategory(@Param('id') id: string) { return this.admin.deleteCategory(id); }
 }

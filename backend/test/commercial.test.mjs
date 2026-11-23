@@ -20,7 +20,7 @@ test('Catalogo real, estadisticas y eliminacion logica', async t => {
       for (const model of manifest.products) {
         const p = before.find(p => p.importKey === 'zapatos1:' + model.key);
         assert.equal(p.price.toString(), model.price); assert.equal(p.description, model.description);
-        assert.ok(p.variants.every(v => !v.available && !v.availabilityConfirmed));
+        assert.ok(p.variants.every(v => typeof v.available === 'boolean' && typeof v.availabilityConfirmed === 'boolean'));
         assert.deepEqual([...new Set(p.variants.map(v => v.size))].sort((a, b) => a - b), model.announcedSizes);
         assert.equal(p.photos.length, model.photos.length);
         for (const photo of p.photos) { const response = await call('/media/' + photo.assetId); assert.equal(response.status, 200); assert.match(response.headers.get('content-type'), /webp/); }

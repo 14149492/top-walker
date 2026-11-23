@@ -43,7 +43,7 @@ test('HU-06: protección, error de credenciales, acceso y cierre desde el navega
   expect(cookie?.httpOnly).toBe(true); expect(cookie?.sameSite).toBe('Lax');
   expect(await page.evaluate(() => document.cookie.includes('topwalker_session'))).toBe(false);
   await noOverflow(page); await page.screenshot({ path: `test-results/admin-panel-${info.project.name}.png`, fullPage: true });
-  await page.getByRole('button', { name: 'Cerrar sesion' }).click();
+  await page.getByRole('button', { name: 'Cerrar sesión' }).click();
   await expect(page).toHaveURL(/\/admin\/login$/);
   expect((await page.request.get('/api/admin/products')).status()).toBe(401);
   await page.goto('/admin'); await expect(page).toHaveURL(/\/admin\/login$/);
@@ -116,7 +116,7 @@ test('HU-07 a HU-10: registro, fotografías, edición, variantes y publicación'
     await page.getByRole('button', { name: '40', exact: true }).click();
     await expect(page.getByRole('status').filter({ hasText: 'Disponible en Negro, talla 40' })).toBeVisible();
     // The second account can maintain the same model without recreating it.
-    await page.goto('/admin'); await page.getByRole('button', { name: 'Cerrar sesion' }).click();
+    await page.goto('/admin'); await page.getByRole('button', { name: 'Cerrar sesión' }).click();
     await expect(page).toHaveURL(/\/admin\/login$/); await login(page, 1, true);
     await page.goto(`/admin/productos/${product.id}/editar`);
     await expect(page.getByLabel('Nombre del modelo')).toHaveValue(name);
